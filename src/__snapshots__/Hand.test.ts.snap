@@ -1,0 +1,923 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hand #snapshots matches the snapshot #1 1`] = `
+Array [
+  Object {
+    "actionPlayerIndex": null,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {},
+    "playerStackSizes": Immutable.Map {
+      0: 105.88,
+      1: 76,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 66.2,
+    },
+    "potSize": 0,
+    "street": "BEGINNING",
+  },
+  Object {
+    "actionPlayerIndex": 0,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 76,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 66.2,
+    },
+    "potSize": 0.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 1,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 66.2,
+    },
+    "potSize": 1.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 2,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      5,
+      3,
+      4,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 66.2,
+    },
+    "potSize": 1.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 3,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      5,
+      4,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      3: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 66.2,
+    },
+    "potSize": 1.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 4,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      3: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 66.2,
+    },
+    "potSize": 1.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 5,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      3: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      5: Object {
+        "betSize": 4,
+        "type": "RAISE",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 62.2,
+    },
+    "potSize": 5.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 0,
+    "activePlayerIndexes": Immutable.Set [
+      5,
+      1,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FOLD",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      3: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      5: Object {
+        "betSize": 4,
+        "type": "RAISE",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 62.2,
+    },
+    "potSize": 5.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 1,
+    "activePlayerIndexes": Immutable.Set [
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FOLD",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FOLD",
+      },
+      2: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      3: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      5: Object {
+        "betSize": 4,
+        "type": "RAISE",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 62.2,
+    },
+    "potSize": 5.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 5,
+    "activePlayerIndexes": Immutable.Set [
+      5,
+    ],
+    "playerLastActions": Immutable.Map {},
+    "playerStackSizes": Immutable.Map {
+      0: 105.47999999999999,
+      1: 75,
+      2: 97.2,
+      3: 93,
+      4: 79.6,
+      5: 67.60000000000001,
+    },
+    "potSize": 0,
+    "street": "PREFLOP",
+  },
+]
+`;
+
+exports[`Hand #snapshots matches the snapshot #2 1`] = `
+Array [
+  Object {
+    "actionPlayerIndex": null,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {},
+    "playerStackSizes": Immutable.Map {
+      0: 82,
+      1: 103.2,
+      2: 107.6,
+      3: 113.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 0,
+    "street": "BEGINNING",
+  },
+  Object {
+    "actionPlayerIndex": 0,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 81.6,
+      1: 103.2,
+      2: 107.6,
+      3: 113.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 0.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 1,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 81.6,
+      1: 102.2,
+      2: 107.6,
+      3: 113.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 1.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 2,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 3,
+        "type": "RAISE",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 81.6,
+      1: 102.2,
+      2: 104.6,
+      3: 113.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 4.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 3,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 3,
+        "type": "RAISE",
+      },
+      3: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 81.6,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 7.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 4,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+      5,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 3,
+        "type": "RAISE",
+      },
+      3: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 81.6,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 7.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 5,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0.4,
+        "type": "FORCED_BET",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 3,
+        "type": "RAISE",
+      },
+      3: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      5: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 81.6,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 7.4,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 0,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      1,
+      2,
+      3,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FORCED_BET",
+      },
+      2: Object {
+        "betSize": 3,
+        "type": "RAISE",
+      },
+      3: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      5: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 10,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": 1,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      3,
+      2,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+      1: Object {
+        "betSize": 1,
+        "type": "FOLD",
+      },
+      2: Object {
+        "betSize": 3,
+        "type": "RAISE",
+      },
+      3: Object {
+        "betSize": 3,
+        "type": "CALL",
+      },
+      4: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      5: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 10,
+    "street": "PREFLOP",
+  },
+  Object {
+    "actionPlayerIndex": null,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      3,
+      2,
+    ],
+    "playerLastActions": Immutable.Map {},
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 10,
+    "street": "FLOP",
+  },
+  Object {
+    "actionPlayerIndex": 0,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      3,
+      2,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0,
+        "type": "CHECK",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 104.6,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 10,
+    "street": "FLOP",
+  },
+  Object {
+    "actionPlayerIndex": 2,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      3,
+      2,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0,
+        "type": "CHECK",
+      },
+      2: Object {
+        "betSize": 4.8,
+        "type": "BET",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 99.8,
+      3: 110.2,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 14.8,
+    "street": "FLOP",
+  },
+  Object {
+    "actionPlayerIndex": 3,
+    "activePlayerIndexes": Immutable.Set [
+      0,
+      3,
+      2,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0,
+        "type": "CHECK",
+      },
+      2: Object {
+        "betSize": 4.8,
+        "type": "BET",
+      },
+      3: Object {
+        "betSize": 4.8,
+        "type": "CALL",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 99.8,
+      3: 105.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 19.6,
+    "street": "FLOP",
+  },
+  Object {
+    "actionPlayerIndex": 0,
+    "activePlayerIndexes": Immutable.Set [
+      2,
+      3,
+    ],
+    "playerLastActions": Immutable.Map {
+      0: Object {
+        "betSize": 0,
+        "type": "FOLD",
+      },
+      2: Object {
+        "betSize": 4.8,
+        "type": "BET",
+      },
+      3: Object {
+        "betSize": 4.8,
+        "type": "CALL",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 99.8,
+      3: 105.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 19.6,
+    "street": "FLOP",
+  },
+  Object {
+    "actionPlayerIndex": null,
+    "activePlayerIndexes": Immutable.Set [
+      2,
+      3,
+    ],
+    "playerLastActions": Immutable.Map {},
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 99.8,
+      3: 105.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 19.6,
+    "street": "FLOP",
+  },
+  Object {
+    "actionPlayerIndex": 2,
+    "activePlayerIndexes": Immutable.Set [
+      2,
+      3,
+    ],
+    "playerLastActions": Immutable.Map {
+      2: Object {
+        "betSize": 9.4,
+        "type": "BET",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 90.39999999999999,
+      3: 105.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 29,
+    "street": "TURN",
+  },
+  Object {
+    "actionPlayerIndex": 3,
+    "activePlayerIndexes": Immutable.Set [
+      2,
+      3,
+    ],
+    "playerLastActions": Immutable.Map {
+      2: Object {
+        "betSize": 9.4,
+        "type": "BET",
+      },
+      3: Object {
+        "betSize": 22,
+        "type": "RAISE",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 90.39999999999999,
+      3: 83.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 51,
+    "street": "TURN",
+  },
+  Object {
+    "actionPlayerIndex": 2,
+    "activePlayerIndexes": Immutable.Set [
+      3,
+    ],
+    "playerLastActions": Immutable.Map {
+      2: Object {
+        "betSize": 9.4,
+        "type": "FOLD",
+      },
+      3: Object {
+        "betSize": 22,
+        "type": "RAISE",
+      },
+    },
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 90.39999999999999,
+      3: 83.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 51,
+    "street": "TURN",
+  },
+  Object {
+    "actionPlayerIndex": 3,
+    "activePlayerIndexes": Immutable.Set [
+      3,
+    ],
+    "playerLastActions": Immutable.Map {},
+    "playerStackSizes": Immutable.Map {
+      0: 79,
+      1: 102.2,
+      2: 90.39999999999999,
+      3: 134.4,
+      4: 100.6,
+      5: 94.8,
+    },
+    "potSize": 0,
+    "street": "TURN",
+  },
+]
+`;
