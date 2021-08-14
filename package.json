@@ -1,0 +1,17 @@
+{
+  "name": "reraisable",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "browser": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "npx rimraf dist && npx tsc --project . --outDir dist --declaration --declarationMap --sourceMap"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  }
+}
