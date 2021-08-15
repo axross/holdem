@@ -1,10 +1,10 @@
 import {
   CardSet,
-  cardSetDifference,
+  cardSetRemoved,
   cardSetForEach,
   cardSetHas,
   cardSetSize,
-  cardSetUnion,
+  cardSetAdded,
   FULL_DECK,
 } from "../models/card-set";
 import { HandRange } from "../models/hand-range";
@@ -26,6 +26,20 @@ export class BacktrackEvaluator {
 
   readonly handRanges: HandRange[];
 
+  get space(): number {
+    let space = 1;
+
+    for (const handRange of this.handRanges) {
+      space *= handRange.size;
+    }
+
+    for (let i = cardSetSize(this.communityCards); i < 5; ++i) {
+      space *= 52 - this.handRanges.length * 2 - i;
+    }
+
+    return space;
+  }
+
   evaluate(): Matchup[] {
     const matchups: Matchup[] = [];
     const handRanges = this.handRanges.map((hr) => [...hr]);
@@ -35,27 +49,14 @@ export class BacktrackEvaluator {
       communityCards: CardSet;
     }[] = [];
 
-    // console.log(
-    //   handRanges,
-    //   handRanges.map((p) => p.map((cs) => cardSetToString(cs)))
-    // );
-
-    // card, deck, cardpair, communityCardsをビットの数値にすれば早そう
-
     stack.push({
-      deck: cardSetDifference(FULL_DECK, this.communityCards),
+      deck: cardSetRemoved(FULL_DECK, this.communityCards),
       holeCardPairs: [],
       communityCards: this.communityCards,
     });
 
     while (stack.length >= 1) {
       const { deck, holeCardPairs, communityCards } = stack.pop()!;
-
-      // console.log({
-      //   deck,
-      //   holeCardPairs: holeCardPairs.map((cs) => cardSetToString(cs)),
-      //   communityCards: cardSetToString(communityCards),
-      // });
 
       if (holeCardPairs.length < handRanges.length) {
         const nextPlayerIndex = holeCardPairs.length;
@@ -64,7 +65,7 @@ export class BacktrackEvaluator {
           if (!cardSetHas(deck, holeCardPair)) continue;
 
           stack.push({
-            deck: cardSetDifference(deck, holeCardPair),
+            deck: cardSetRemoved(deck, holeCardPair),
             holeCardPairs: [...holeCardPairs, holeCardPair],
             communityCards,
           });
@@ -76,9 +77,9 @@ export class BacktrackEvaluator {
       if (cardSetSize(communityCards) < 5) {
         cardSetForEach(deck, (card) => {
           stack.push({
-            deck: cardSetDifference(deck, card),
+            deck: cardSetRemoved(deck, card),
             holeCardPairs,
-            communityCards: cardSetUnion(communityCards, card),
+            communityCards: cardSetAdded(communityCards, card),
           });
         });
 
@@ -86,13 +87,6 @@ export class BacktrackEvaluator {
       }
 
       matchups.push(showdown(holeCardPairs, communityCards));
-
-      // console.log({
-      //   communityCards: cardSetToString(a.communityCards),
-      //   holeCardPairs: a.holeCardPairs.map((v) => cardSetToString(v)),
-      //   hands: a.hands,
-      //   bestHands: a.bestHands,
-      // });
     }
 
     return matchups;

@@ -1,12 +1,18 @@
-import { CardSet, cardSetUnion } from "./card-set";
+import { CardSet, cardSetAdded } from "./card-set";
 import { getBestMadeHandFrom, MadeHand } from "./made-hand";
 
+/**
+ *
+ */
 export interface Matchup {
   communityCards: CardSet;
   holeCardPairs: CardSet[];
   hands: MadeHand[];
 }
 
+/**
+ *
+ */
 export function showdown(
   holeCardPairs: CardSet[],
   communityCards: CardSet
@@ -15,7 +21,7 @@ export function showdown(
 
   for (const holeCardPair of holeCardPairs) {
     const madeHand = getBestMadeHandFrom(
-      cardSetUnion(holeCardPair, communityCards)
+      cardSetAdded(holeCardPair, communityCards)
     );
 
     hands.push(madeHand);

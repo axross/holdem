@@ -1,17 +1,22 @@
 import { compile, tokenize } from "./lib/index";
 import { BacktrackEvaluator } from "./lib/src/evaluators/backtrack";
-import { MontecarloSimulator } from "./lib/src/evaluators/montecarlo";
+import { MontecarloEvaluator } from "./lib/src/evaluators/montecarlo";
 import { stringToCardSet } from "./lib/src/models/card-set";
 
 const handRanges = [
-  compile(tokenize("AhAd")),
-  compile(tokenize("AKsKK")),
-  compile(tokenize("64s+")),
+  compile(tokenize("As3h")),
+  compile(tokenize("8d8h")),
+  compile(tokenize("QcJc")),
 ];
 
-const communityCards = stringToCardSet("3cQc8s");
+const communityCards = stringToCardSet("3c6dTs");
 
-console.log(handRanges.reduce((t, hr) => t * hr.size, 1) * 46 * 45);
+console.log(
+  new BacktrackEvaluator({
+    communityCards,
+    handRanges,
+  }).space
+);
 
 console.time("BacktrackEvaluator.initialize");
 
@@ -55,20 +60,20 @@ console.log(
   )
 );
 
-console.time("MontecarloSimulator.initialize");
+console.time("MontecarloEvaluator.initialize");
 
-const simulator = new MontecarloSimulator({
+const simulator = new MontecarloEvaluator({
   communityCards,
   handRanges,
 });
 
-console.timeEnd("MontecarloSimulator.initialize");
+console.timeEnd("MontecarloEvaluator.initialize");
 
-console.time("MontecarloSimulator.simulate");
+console.time("MontecarloEvaluator.evaluate");
 
-const matchups2 = simulator.simulateTimes(100000);
+const matchups2 = simulator.evaluateTimes(100000);
 
-console.timeEnd("MontecarloSimulator.simulate");
+console.timeEnd("MontecarloEvaluator.evaluate");
 
 console.log(matchups2.length);
 

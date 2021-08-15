@@ -2,17 +2,17 @@ import { stringToCard } from "./card";
 import {
   cardSetHas,
   cardSetToString,
-  cardSetUnion,
+  cardSetAdded,
   stringToCardSet,
 } from "./card-set";
 
-describe("cardSetUnion()", () => {
+describe("cardSetAdded()", () => {
   it.concurrent.each([
     ["AsAh", "As", "Ah"],
     ["As2h", "As", "2h"],
     ["Ac2h", "Ac", "2h"],
   ])("returns %s as an union of %s and %s", (expected, cardA, cardB) => {
-    expect(cardSetUnion(stringToCard(cardA), stringToCard(cardB))).toBe(
+    expect(cardSetAdded(stringToCard(cardA), stringToCard(cardB))).toBe(
       stringToCardSet(expected)
     );
   });

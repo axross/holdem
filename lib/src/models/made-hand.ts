@@ -3,7 +3,7 @@ import {
   asRainbow,
   dpReference,
 } from "../constants/precalculated-table";
-import { getRank, getSuit, Rank, Suit } from "./card";
+import { cardRank, cardSuit, Rank, Suit } from "./card";
 import { CardSet, cardSetForEach } from "./card-set";
 
 /**
@@ -54,10 +54,10 @@ function findFlushSuit(cards: CardSet): Suit | null {
   let suit: Suit | null = null;
 
   cardSetForEach(cards, (card) => {
-    suitCount[getSuit(card)] += 1;
+    suitCount[cardSuit(card)] += 1;
 
-    if (suitCount[getSuit(card)]! === 5) {
-      suit = getSuit(card);
+    if (suitCount[cardSuit(card)]! === 5) {
+      suit = cardSuit(card);
     }
   });
 
@@ -73,8 +73,8 @@ function hashForFlush(cards: CardSet, suit: Suit): number {
   let hash = 0;
 
   cardSetForEach(cards, (card) => {
-    if (getSuit(card) === suit) {
-      hash += bitEachRank[getRank(card)]!;
+    if (cardSuit(card) === suit) {
+      hash += bitEachRank[cardRank(card)]!;
     }
   });
 
@@ -86,7 +86,7 @@ function hashForRainbow(cards: CardSet): number {
   let remainingCardLength = 0;
 
   cardSetForEach(cards, (card) => {
-    cardLengthEachRank[getRank(card)] += 1;
+    cardLengthEachRank[cardRank(card)] += 1;
     remainingCardLength += 1;
   });
 

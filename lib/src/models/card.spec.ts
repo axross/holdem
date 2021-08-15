@@ -1,7 +1,7 @@
 import {
   cardToString,
-  getRank,
-  getSuit,
+  cardRank,
+  cardSuit,
   Rank,
   stringToCard,
   Suit,
@@ -47,7 +47,7 @@ describe("cardToString()", () => {
   });
 });
 
-describe("getRank()", () => {
+describe("cardRank()", () => {
   it.concurrent.each([
     [Rank.Ace, "As"],
     [Rank.Deuce, "2s"],
@@ -63,11 +63,11 @@ describe("getRank()", () => {
     [Rank.Queen, "Qc"],
     [Rank.King, "Kc"],
   ])("returns %s when the given value is %s", (expected, value) => {
-    expect(getRank(stringToCard(value))).toBe(expected);
+    expect(cardRank(stringToCard(value))).toBe(expected);
   });
 });
 
-describe("getSuit()", () => {
+describe("cardSuit()", () => {
   it.concurrent.each([
     [Suit.Spade, "As"],
     [Suit.Spade, "2s"],
@@ -83,6 +83,6 @@ describe("getSuit()", () => {
     [Suit.Club, "Qc"],
     [Suit.Club, "Kc"],
   ])("returns %s when the given value is %s", (expected, value) => {
-    expect(getSuit(stringToCard(value))).toBe(expected);
+    expect(cardSuit(stringToCard(value))).toBe(expected);
   });
 });
