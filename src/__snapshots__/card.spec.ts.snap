@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CardUtils.parse() throws an error because "" is invalid string 1`] = `""" is not a valid string for CardUtils.parse()."`;
+
+exports[`CardUtils.parse() throws an error because "AS" is invalid string 1`] = `""AS" is not a valid string for CardUtils.parse()."`;
+
+exports[`CardUtils.parse() throws an error because "Ak" is invalid string 1`] = `""Ak" is not a valid string for CardUtils.parse()."`;
+
+exports[`CardUtils.parse() throws an error because "as" is invalid string 1`] = `""as" is not a valid string for CardUtils.parse()."`;
+
+exports[`CardUtils.parse() throws an error because "sA" is invalid string 1`] = `""sA" is not a valid string for CardUtils.parse()."`;

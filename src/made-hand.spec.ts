@@ -1,7 +1,7 @@
-import { stringToCardSet } from "./card-set";
-import { getBestMadeHandFrom } from "./made-hand";
+import { CardSetUtils } from "./card-set";
+import { MadeHandUtils } from "./made-hand";
 
-describe("getBestMadeHandFrom()", () => {
+describe("MadeHandUtils.findBestFrom()", () => {
   it.concurrent.each([
     [1881, "4c8hKhQc4s6hJd"],
     [1612, "2d5sJc6s3s3dQh"],
@@ -1003,7 +1003,9 @@ describe("getBestMadeHandFrom()", () => {
     [4618, "8d7cJdJhQd9s9c"],
     [1851, "Ks4c7d2d4s8c3s"],
     [1516, "3d7c5d6c3c2d8c"],
-  ])("returns %i when the given cards are %s", (expected, cards) => {
-    expect(getBestMadeHandFrom(stringToCardSet(cards))).toBe(7462 - expected);
+  ])("returns MadeHand<%i> from CardSet<%s>", (madeHand, cards) => {
+    expect(MadeHandUtils.findBestFrom(CardSetUtils.parse(cards))).toBe(
+      7462 - madeHand
+    );
   });
 });

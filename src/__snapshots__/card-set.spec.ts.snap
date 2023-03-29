@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `""AsKC".substring(2, 4) is not a valid CardString."`;
+
+exports[` 2`] = `""AsKcqh".substring(4, 6) is not a valid CardString."`;
+
+exports[` 3`] = `""AKs".substring(0, 2) is not a valid CardString."`;
+
+exports[` 4`] = `""44".substring(0, 2) is not a valid CardString."`;
+
+exports[` 5`] = `""As+".substring(2, 4) is not a valid CardString."`;

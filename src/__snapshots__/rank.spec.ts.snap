@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RankUtils.parse() throws an error because "" is not a valid string 1`] = `""" is not a valid value for RankUtils.parse()."`;
+
+exports[`RankUtils.parse() throws an error because "a" is not a valid string 1`] = `""a" is not a valid value for RankUtils.parse()."`;

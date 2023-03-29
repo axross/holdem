@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SuitUtils.parse() throws an error because "" is not a valid string 1`] = `""" is not a valid value for SuitUtils.parse()."`;
+
+exports[`SuitUtils.parse() throws an error because "S" is not a valid string 1`] = `""S" is not a valid value for SuitUtils.parse()."`;
