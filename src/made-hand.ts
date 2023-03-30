@@ -1,8 +1,8 @@
-import { asFlush, asRainbow, dpReference } from "./precalculated-table";
 import { CardUtils } from "./card";
-import { Rank } from "./rank";
-import { Suit } from "./suit";
 import { CardSet, CardSetUtils } from "./card-set";
+import { asFlush, asRainbow, dpReference } from "./precalculated-table";
+import { Rank, ranksInOrder } from "./rank";
+import { Suit, suitsInOrder } from "./suit";
 
 /**
  * An index of [Cactus Kev's poker hand equivalence enums](http://suffe.cool/poker/7462.html).
@@ -65,9 +65,9 @@ function findFlushSuit(cards: CardSet): Suit | null {
   let suit: Suit | null = null;
 
   for (const card of CardSetUtils.iterate(cards)) {
-    suitCount[CardUtils.suitOf(card)] += 1;
+    suitCount[suitsInOrder.indexOf(CardUtils.suitOf(card))] += 1;
 
-    if (suitCount[CardUtils.suitOf(card)]! === 5) {
+    if (suitCount[suitsInOrder.indexOf(CardUtils.suitOf(card))]! === 5) {
       suit = CardUtils.suitOf(card);
     }
   }
@@ -80,7 +80,7 @@ function hashForFlush(cards: CardSet, suit: Suit): number {
 
   for (const card of CardSetUtils.iterate(cards)) {
     if (CardUtils.suitOf(card) === suit) {
-      hash += bitEachRank[CardUtils.rankOf(card)]!;
+      hash += bitEachRank[ranksInOrder.indexOf(CardUtils.rankOf(card))]!;
     }
   }
 
@@ -97,14 +97,14 @@ function hashForRainbow(cards: CardSet): number {
   let remainingCardLength = 0;
 
   for (const card of CardSetUtils.iterate(cards)) {
-    cardLengthEachRank[CardUtils.rankOf(card)] += 1;
+    cardLengthEachRank[ranksInOrder.indexOf(CardUtils.rankOf(card))] += 1;
     remainingCardLength += 1;
   }
 
   let hash = 0;
 
   for (const rank of ranks) {
-    const length = cardLengthEachRank[rank]!;
+    const length = cardLengthEachRank[ranksInOrder.indexOf(rank)]!;
 
     if (length === 0) continue;
 
@@ -118,17 +118,17 @@ function hashForRainbow(cards: CardSet): number {
 }
 
 const ranks: Rank[] = [
-  Rank.Deuce,
-  Rank.Trey,
-  Rank.Four,
-  Rank.Five,
-  Rank.Six,
-  Rank.Seven,
-  Rank.Eight,
-  Rank.Nine,
-  Rank.Ten,
-  Rank.Jack,
-  Rank.Queen,
-  Rank.King,
-  Rank.Ace,
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "T",
+  "J",
+  "Q",
+  "K",
+  "A",
 ];

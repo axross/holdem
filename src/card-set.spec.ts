@@ -1,8 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 import { CardUtils } from "./card";
 import { CardSet, CardSetUtils } from "./card-set";
-import { Rank } from "./rank";
-import { Suit } from "./suit";
 
 describe("CardSetUtils.empty", () => {
   it("is a CardSet that is empty", () => {
@@ -23,10 +21,10 @@ describe("CardSetUtils.full", () => {
 describe("CardSetUtils.from()", () => {
   it("creates a CardSet from cards", () => {
     const cardSet = CardSetUtils.from([
-      CardUtils.create(Rank.Ace, Suit.Spade),
-      CardUtils.create(Rank.King, Suit.Club),
-      CardUtils.create(Rank.Queen, Suit.Heart),
-      CardUtils.create(Rank.Jack, Suit.Diamond),
+      CardUtils.create("A", "s"),
+      CardUtils.create("K", "c"),
+      CardUtils.create("Q", "h"),
+      CardUtils.create("J", "d"),
     ]);
 
     expect(cardSet).toBe(
@@ -59,10 +57,10 @@ describe("CardSetUtils.parse()", () => {
 describe("CardSetUtils.iterate()", () => {
   it("iterates a CardSet<0b1000000000000001000000000001000000000000000000000001n>", () => {
     const cardSet = CardSetUtils.from([
-      CardUtils.create(Rank.Ace, Suit.Spade),
-      CardUtils.create(Rank.King, Suit.Club),
-      CardUtils.create(Rank.Queen, Suit.Heart),
-      CardUtils.create(Rank.Jack, Suit.Diamond),
+      CardUtils.create("A", "s"),
+      CardUtils.create("K", "c"),
+      CardUtils.create("Q", "h"),
+      CardUtils.create("J", "d"),
     ]);
     const cards = [];
 
@@ -71,10 +69,10 @@ describe("CardSetUtils.iterate()", () => {
     }
 
     expect(cards).toEqual([
-      CardUtils.create(Rank.Ace, Suit.Spade),
-      CardUtils.create(Rank.Queen, Suit.Heart),
-      CardUtils.create(Rank.Jack, Suit.Diamond),
-      CardUtils.create(Rank.King, Suit.Club),
+      CardUtils.create("A", "s"),
+      CardUtils.create("Q", "h"),
+      CardUtils.create("J", "d"),
+      CardUtils.create("K", "c"),
     ]);
   });
 });

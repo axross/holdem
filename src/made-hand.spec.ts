@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import { CardSetUtils } from "./card-set";
 import { MadeHandUtils } from "./made-hand";
 
@@ -1003,7 +1004,7 @@ describe("MadeHandUtils.findBestFrom()", () => {
     [4618, "8d7cJdJhQd9s9c"],
     [1851, "Ks4c7d2d4s8c3s"],
     [1516, "3d7c5d6c3c2d8c"],
-  ])("returns MadeHand<%i> from CardSet<%s>", (madeHand, cards) => {
+  ])("returns MadeHand<%i> from CardSet<%s>", async (madeHand, cards) => {
     expect(MadeHandUtils.findBestFrom(CardSetUtils.parse(cards))).toBe(
       7462 - madeHand
     );

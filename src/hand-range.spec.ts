@@ -1,8 +1,7 @@
+import { describe, expect, it } from "@jest/globals";
 import { CardUtils } from "./card";
 import { CardSet, CardSetUtils } from "./card-set";
 import { HandRangeUtils } from "./hand-range";
-import { Rank } from "./rank";
-import { Suit } from "./suit";
 
 describe("HandRangeUtils.parse()", () => {
   it('parses "88-66" into a hand range', () => {
@@ -143,36 +142,36 @@ describe("HandRangeUtils.create()", () => {
     const cardSets: [CardSet, number][] = [
       [
         CardSetUtils.from([
-          CardUtils.create(Rank.Ace, Suit.Spade),
-          CardUtils.create(Rank.Deuce, Suit.Club),
+          CardUtils.create("A", "s"),
+          CardUtils.create("2", "c"),
         ]),
         1,
       ],
       [
         CardSetUtils.from([
-          CardUtils.create(Rank.Five, Suit.Heart),
-          CardUtils.create(Rank.Six, Suit.Spade),
+          CardUtils.create("5", "h"),
+          CardUtils.create("6", "s"),
         ]),
         1,
       ],
       [
         CardSetUtils.from([
-          CardUtils.create(Rank.Jack, Suit.Club),
-          CardUtils.create(Rank.Queen, Suit.Diamond),
+          CardUtils.create("J", "c"),
+          CardUtils.create("Q", "d"),
         ]),
         1,
       ],
       [
         CardSetUtils.from([
-          CardUtils.create(Rank.Six, Suit.Spade),
-          CardUtils.create(Rank.Five, Suit.Heart),
+          CardUtils.create("6", "s"),
+          CardUtils.create("5", "h"),
         ]),
         1,
       ],
       [
         CardSetUtils.from([
-          CardUtils.create(Rank.Ace, Suit.Spade),
-          CardUtils.create(Rank.Deuce, Suit.Diamond),
+          CardUtils.create("A", "s"),
+          CardUtils.create("2", "d"),
         ]),
         0.5,
       ],
@@ -188,23 +187,23 @@ describe("HandRangeUtils.create()", () => {
       HandRangeUtils.create([
         [
           CardSetUtils.from([
-            CardUtils.create(Rank.Ace, Suit.Spade),
-            CardUtils.create(Rank.Deuce, Suit.Club),
+            CardUtils.create("A", "s"),
+            CardUtils.create("2", "c"),
           ]),
           1,
         ],
         [
           CardSetUtils.from([
-            CardUtils.create(Rank.Five, Suit.Heart),
-            CardUtils.create(Rank.Six, Suit.Spade),
+            CardUtils.create("5", "h"),
+            CardUtils.create("6", "s"),
           ]),
           1,
         ],
         [
           CardSetUtils.from([
-            CardUtils.create(Rank.Jack, Suit.Diamond),
-            CardUtils.create(Rank.Queen, Suit.Heart),
-            CardUtils.create(Rank.King, Suit.Club),
+            CardUtils.create("J", "d"),
+            CardUtils.create("Q", "h"),
+            CardUtils.create("K", "c"),
           ]),
           1,
         ],
@@ -215,64 +214,34 @@ describe("HandRangeUtils.create()", () => {
   });
 });
 
-// describe("HandRange#format()", () => {
-//   it('stringifies HandRange<88-66> into "88-66"', () => {
-//     expect(HandRangeUtils.parse("88-66").format()).toBe("88-66");
-//   });
+describe("HandRangeUtils.format()", () => {
+  it("stringifies HandRange<JJ+:1,66-44:1>", () => {
+    expect(HandRangeUtils.format(HandRangeUtils.parse("JJ+:1,66-44:1"))).toBe(
+      "JJ+:1,66-44:1"
+    );
+  });
 
-//   it('stringifies HandRange<JJ+> into "JJ+"', () => {
-//     expect(HandRangeUtils.parse("JJ+").format()).toBe("JJ+");
-//   });
+  it("stringifies HandRange<QQ+:1,JJ:0.5,TT:1,77-66:0.5,55-44:0.25>", () => {
+    expect(
+      HandRangeUtils.format(
+        HandRangeUtils.parse("QQ+:1,JJ:0.5,TT:1,77-66:0.5,55-44:0.25")
+      )
+    ).toBe("QQ+:1,JJ:0.5,TT:1,77-66:0.5,55-44:0.25");
+  });
 
-//   it('stringifies HandRange<44> into "44"', () => {
-//     expect(HandRangeUtils.parse("44").format()).toBe("44");
-//   });
+  it("stringifies HandRange<88-66:0.66,JJ+:0.5,44:0.44,AQs-A9s:0.2,98o-96o:0.999,K8s+:0.80,ATo+:1,63s:0.5,JTs:0.25,72o:0.27,AsKs:0.4,AsQc:0.5,KhJh:1,7d6h:0.67>", () => {
+    expect(
+      HandRangeUtils.format(
+        HandRangeUtils.parse(
+          "88-66:0.66,JJ+:0.5,44:0.44,AQs-A9s:0.2,98o-96o:0.999,K8s+:0.80,ATo+:1,63s:0.5,JTs:0.25,72o:0.27,AsKs:0.4,AsQc:0.5,KhJh:1,7d6h:0.67"
+        )
+      )
+    ).toBe(
+      "JJ+:0.5,88-66:0.66,44:0.44,AQs-A9s:0.2,AKo:1,AJo-ATo:1,KQs:0.8,KTs-K8s:0.8,JTs:0.25,96o+:0.999,72o:0.27,63s:0.5,AsKs:0.4,AsQh:1,AsQd:1,AsQc:0.5,AhQs:1,AhQd:1,AhQc:1,AdQs:1,AdQh:1,AdQc:1,AcQs:1,AcQh:1,AcQd:1,KsJs:0.8,KhJh:1,KdJd:0.8,KcJc:0.8,7d6h:0.67"
+    );
+  });
 
-//   it('stringifies HandRange<AQs-A9s> into "AQs-A9s"', () => {
-//     expect(HandRangeUtils.parse("AQs-A9s").format()).toBe("AQs-A9s");
-//   });
-
-//   it('stringifies HandRange<J9o-J6o> into "J9o-J6o"', () => {
-//     expect(HandRangeUtils.parse("J9o-J6o").format()).toBe("J9o-J6o");
-//   });
-
-//   it('stringifies HandRange<98o-96o> into "96o+"', () => {
-//     expect(HandRangeUtils.parse("98o-96o").format()).toBe("96o+");
-//   });
-
-//   it('stringifies HandRange<K8s+> into "K8s+"', () => {
-//     expect(HandRangeUtils.parse("K8s+").format()).toBe("K8s+");
-//   });
-
-//   it('stringifies HandRange<ATo+> into "ATo+"', () => {
-//     expect(HandRangeUtils.parse("ATo+").format()).toBe("ATo+");
-//   });
-
-//   it('stringifies HandRange<JTs> into "JTs"', () => {
-//     expect(HandRangeUtils.parse("JTs").format()).toBe("JTs");
-//   });
-
-//   it('stringifies HandRange<72o> into "72o"', () => {
-//     expect(HandRangeUtils.parse("72o").format()).toBe("72o");
-//   });
-
-//   it('stringifies HandRange<AsKs> into "AsKs"', () => {
-//     expect(HandRangeUtils.parse("AsKs").format()).toBe("AsKs");
-//   });
-
-//   it('stringifies HandRange<7d6h> into "7d6h"', () => {
-//     expect(HandRangeUtils.parse("7d6h").format()).toBe("7d6h");
-//   });
-
-//   it('stringifies HandRange<88-66JJ+44AQs-A9s98o-96oK8s+ATo+JTs72o7d6hAsKs> into "JJ+88-6644AQs-A9sATo+K8s+JTs96o+72oAsKs7d6h"', () => {
-//     expect(
-//       HandRangeUtils.parse(
-//         "88-66JJ+44AQs-A9s98o-96oK8s+ATo+JTs72o7d6hAsKs"
-//       ).format()
-//     ).toBe("JJ+88-6644AQs-A9sATo+K8s+JTs96o+72oAsKs7d6h");
-//   });
-
-//   it('stringifies HandRange<> into ""', () => {
-//     expect(HandRangeUtils.parse("").format()).toBe("");
-//   });
-// });
+  it("stringifies an empty HandRange", () => {
+    expect(HandRangeUtils.format(HandRangeUtils.parse(""))).toBe("");
+  });
+});

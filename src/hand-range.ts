@@ -1,7 +1,7 @@
 import { CardUtils } from "./card";
 import { CardSet, CardSetUtils } from "./card-set";
-import { Rank, RankUtils } from "./rank";
-import { Suit } from "./suit";
+import { Rank, ranksInPowerOrder, RankUtils } from "./rank";
+import { suitsInOrder } from "./suit";
 
 /**
  * A map of entries that consists of CardSet and respective probability in a hand range.
@@ -62,8 +62,12 @@ export const HandRangeUtils = Object.freeze({
 
         if (probability === 0) continue;
 
-        for (let i = ranks.indexOf(top); i <= ranks.indexOf(bottom); ++i) {
-          for (const cardPair of pocketCardPairs(ranks[i]!)) {
+        for (
+          let i = ranksInPowerOrder.indexOf(top);
+          i <= ranksInPowerOrder.indexOf(bottom);
+          ++i
+        ) {
+          for (const cardPair of pocketCardPairs(ranksInPowerOrder[i]!)) {
             handRange.set(cardPair, probability);
           }
         }
@@ -87,20 +91,28 @@ export const HandRangeUtils = Object.freeze({
         if (probability === 0) continue;
 
         if (
-          ranks.indexOf(high) < ranks.indexOf(kickerTop) &&
-          ranks.indexOf(kickerTop) < ranks.indexOf(kickerBottom)
+          ranksInPowerOrder.indexOf(high) <
+            ranksInPowerOrder.indexOf(kickerTop) &&
+          ranksInPowerOrder.indexOf(kickerTop) <
+            ranksInPowerOrder.indexOf(kickerBottom)
         ) {
           for (
-            let i = ranks.indexOf(kickerTop);
-            i <= ranks.indexOf(kickerBottom);
+            let i = ranksInPowerOrder.indexOf(kickerTop);
+            i <= ranksInPowerOrder.indexOf(kickerBottom);
             ++i
           ) {
             if (part[2] == "s") {
-              for (const cardPair of suitedCardPairs(high, ranks[i]!)) {
+              for (const cardPair of suitedCardPairs(
+                high,
+                ranksInPowerOrder[i]!
+              )) {
                 handRange.set(cardPair, probability);
               }
             } else {
-              for (const cardPair of ofsuitCardPairs(high, ranks[i]!)) {
+              for (const cardPair of ofsuitCardPairs(
+                high,
+                ranksInPowerOrder[i]!
+              )) {
                 handRange.set(cardPair, probability);
               }
             }
@@ -118,8 +130,12 @@ export const HandRangeUtils = Object.freeze({
 
         if (probability === 0) continue;
 
-        for (let i = 0; i <= ranks.indexOf(RankUtils.parse(part[0]!)); ++i) {
-          for (const cardPair of pocketCardPairs(ranks[i]!)) {
+        for (
+          let i = 0;
+          i <= ranksInPowerOrder.indexOf(RankUtils.parse(part[0]!));
+          ++i
+        ) {
+          for (const cardPair of pocketCardPairs(ranksInPowerOrder[i]!)) {
             handRange.set(cardPair, probability);
           }
         }
@@ -133,17 +149,27 @@ export const HandRangeUtils = Object.freeze({
       ) {
         const high = RankUtils.parse(part[0]!);
         const kicker = RankUtils.parse(part[1]!);
-        const probability = parseProbability(part.substring(4));
+        const probability = parseProbability(part.substring(5));
 
         if (probability === 0) continue;
 
-        for (let i = ranks.indexOf(high) + 1; i <= ranks.indexOf(kicker); ++i) {
+        for (
+          let i = ranksInPowerOrder.indexOf(high) + 1;
+          i <= ranksInPowerOrder.indexOf(kicker);
+          ++i
+        ) {
           if (part[2] == "s") {
-            for (const cardPair of suitedCardPairs(high, ranks[i]!)) {
+            for (const cardPair of suitedCardPairs(
+              high,
+              ranksInPowerOrder[i]!
+            )) {
               handRange.set(cardPair, probability);
             }
           } else {
-            for (const cardPair of ofsuitCardPairs(high, ranks[i]!)) {
+            for (const cardPair of ofsuitCardPairs(
+              high,
+              ranksInPowerOrder[i]!
+            )) {
               handRange.set(cardPair, probability);
             }
           }
@@ -215,22 +241,19 @@ export const HandRangeUtils = Object.freeze({
   rankPairs(handRange: HandRange): Map<string, number> {
     const rankPairs = new Map<string, number>();
 
-    for (const rank of ranks) {
+    for (const rank of ranksInPowerOrder) {
       const probability = handRange.get(pocketCardPairs(rank)[0]!);
 
       if (
         probability !== undefined &&
         pocketCardPairs(rank).every((cp) => handRange.get(cp) === probability)
       ) {
-        rankPairs.set(
-          `${RankUtils.format(rank)}${RankUtils.format(rank)}`,
-          probability
-        );
+        rankPairs.set(`${rank}${rank}`, probability);
       }
     }
 
-    for (const [i, hr] of ranks.entries()) {
-      for (const kr of ranks.slice(i + 1)) {
+    for (const [i, hr] of ranksInPowerOrder.entries()) {
+      for (const kr of ranksInPowerOrder.slice(i + 1)) {
         const suitedProbability = handRange.get(suitedCardPairs(hr, kr)[0]!);
 
         if (
@@ -239,10 +262,7 @@ export const HandRangeUtils = Object.freeze({
             (cp) => handRange.get(cp) === suitedProbability
           )
         ) {
-          rankPairs.set(
-            `${RankUtils.format(hr)}${RankUtils.format(kr)}s`,
-            suitedProbability
-          );
+          rankPairs.set(`${hr}${kr}s`, suitedProbability);
         }
 
         const ofsuitProbability = handRange.get(ofsuitCardPairs(hr, kr)[0]!);
@@ -250,13 +270,10 @@ export const HandRangeUtils = Object.freeze({
         if (
           ofsuitProbability !== undefined &&
           ofsuitCardPairs(hr, kr).every(
-            (cp) => handRange.get(cp) !== ofsuitProbability
+            (cp) => handRange.get(cp) === ofsuitProbability
           )
         ) {
-          rankPairs.set(
-            `${RankUtils.format(hr)}${RankUtils.format(kr)}o`,
-            ofsuitProbability
-          );
+          rankPairs.set(`${hr}${kr}o`, ofsuitProbability);
         }
       }
     }
@@ -310,151 +327,164 @@ export const HandRangeUtils = Object.freeze({
   format(handRange: HandRange): string {
     const rankPairs = HandRangeUtils.rankPairs(handRange);
     const detachedCardPairs = HandRangeUtils.detachedCardPairs(handRange);
+    const stringParts: string[] = [];
 
-    // let result = "";
-    //
-    // let start = -1;
-    // for (let i = 0; i < ranks.length; ++i) {
-    //   if (
-    //     pocketParts.has(
-    //       `${RankUtils.toString(ranks[i]!)}${RankUtils.toString(ranks[i]!)}`
-    //     )
-    //   ) {
-    //     if (start === -1) {
-    //       start = i;
-    //     }
-    //   }
+    let start = 0;
+    for (const [i, r] of ranksInPowerOrder.entries()) {
+      const startR = ranksInPowerOrder[start]!;
+      const startP = rankPairs.get(startR.repeat(2)) ?? null;
+      const p = rankPairs.get(r.repeat(2)) ?? null;
 
-    //   if (
-    //     start !== -1 &&
-    //     (i === ranks.length - 1 ||
-    //       !pocketParts.has(
-    //         `${RankUtils.toString(ranks[i + 1]!)}${RankUtils.toString(
-    //           ranks[i + 1]!
-    //         )}`
-    //       ))
-    //   ) {
-    //     if (start === i) {
-    //       result += `${RankUtils.toString(ranks[i]!).repeat(2)}`;
-    //     } else if (start === 0) {
-    //       result += `${RankUtils.toString(ranks[i]!).repeat(2)}+`;
-    //     } else {
-    //       result += `${RankUtils.toString(ranks[start]!).repeat(
-    //         2
-    //       )}-${RankUtils.toString(ranks[i]!).repeat(2)}`;
-    //     }
+      if (startP === null && p !== null) {
+        start = i;
+      }
 
-    //     start = -1;
-    //   }
-    // }
+      if (p === startP) continue;
 
-    // for (let h = 0; h < ranks.length - 1; ++h) {
-    //   let suitedStart = -1;
-    //   let ofsuitStart = -1;
+      if (startP !== null) {
+        const prevR = ranksInPowerOrder[i - 1]!;
 
-    //   for (let k = h + 1; k < ranks.length; ++k) {
-    //     if (
-    //       suitedParts.has(
-    //         `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(ranks[k]!)}s`
-    //       )
-    //     ) {
-    //       if (suitedStart === -1) {
-    //         suitedStart = k;
-    //       }
-    //     }
+        if (start === 0) {
+          stringParts.push(`${prevR}${prevR}+:${formatProbability(startP!)}`);
+        } else if (start === i - 1) {
+          stringParts.push(`${prevR}${prevR}:${formatProbability(startP!)}`);
+        } else {
+          stringParts.push(
+            `${startR}${startR}-${prevR}${prevR}:${formatProbability(startP!)}`
+          );
+        }
+      }
 
-    //     if (
-    //       suitedStart !== -1 &&
-    //       (k === ranks.length - 1 ||
-    //         !suitedParts.has(
-    //           `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //             ranks[k + 1]!
-    //           )}s`
-    //         ))
-    //     ) {
-    //       if (suitedStart === k) {
-    //         result += `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[k]!
-    //         )}s`;
-    //       } else if (suitedStart === h + 1) {
-    //         result += `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[k]!
-    //         )}s+`;
-    //       } else {
-    //         result += `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[suitedStart]!
-    //         )}s-${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[k]!
-    //         )}s`;
-    //       }
-
-    //       suitedStart = -1;
-    //     }
-    //   }
-
-    //   for (let k = h + 1; k < ranks.length; ++k) {
-    //     if (
-    //       ofsuitParts.has(
-    //         `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(ranks[k]!)}o`
-    //       )
-    //     ) {
-    //       if (ofsuitStart === -1) {
-    //         ofsuitStart = k;
-    //       }
-    //     }
-
-    //     if (
-    //       ofsuitStart !== -1 &&
-    //       (k === ranks.length - 1 ||
-    //         !ofsuitParts.has(
-    //           `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //             ranks[k + 1]!
-    //           )}o`
-    //         ))
-    //     ) {
-    //       if (ofsuitStart === k) {
-    //         result += `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[k]!
-    //         )}o`;
-    //       } else if (ofsuitStart === h + 1) {
-    //         result += `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[k]!
-    //         )}o+`;
-    //       } else {
-    //         result += `${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[ofsuitStart]!
-    //         )}o-${RankUtils.toString(ranks[h]!)}${RankUtils.toString(
-    //           ranks[k]!
-    //         )}o`;
-    //       }
-
-    //       ofsuitStart = -1;
-    //     }
-    //   }
-    // }
-
-    // for (const part of individualParts) {
-    //   result += part;
-    // }
-
-    let stringParts = [];
-
-    for (const [rankPair, probability] of rankPairs.entries()) {
-      stringParts.push(`${rankPair}:${formatProbability(probability)}`);
+      start = i;
     }
 
-    for (const [cardPair, probability] of detachedCardPairs.entries()) {
-      stringParts.push(
-        `${CardSetUtils.format(cardPair)}:${formatProbability(probability)}`
-      );
+    for (const [i, h] of ranksInPowerOrder.entries()) {
+      let suitedStart = i + 1;
+
+      for (const [j, k] of ranksInPowerOrder.entries()) {
+        if (j < i + 1) continue;
+
+        const startK = ranksInPowerOrder[suitedStart]!;
+        const startP = rankPairs.get(`${h}${startK}s`) ?? null;
+        const p = rankPairs.get(`${h}${k}s`) ?? null;
+
+        if (startP === null && p !== null) {
+          suitedStart = j;
+        }
+
+        if (p === startP) continue;
+
+        if (startP !== null) {
+          const prevK = ranksInPowerOrder[j - 1]!;
+
+          if (suitedStart === j - 1) {
+            stringParts.push(`${h}${prevK}s:${formatProbability(startP!)}`);
+          } else if (suitedStart === i + 1) {
+            stringParts.push(`${h}${prevK}s+:${formatProbability(startP!)}`);
+          } else {
+            stringParts.push(
+              `${h}${startK}s-${h}${prevK}s:${formatProbability(startP!)}`
+            );
+          }
+        }
+
+        suitedStart = j;
+      }
+
+      if (
+        rankPairs.get(`${h}${ranksInPowerOrder[suitedStart]!}s`) !== undefined
+      ) {
+        const startK = ranksInPowerOrder[suitedStart]!;
+        const startP = rankPairs.get(`${h}${startK}s`)!;
+        const k = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
+
+        if (suitedStart === ranksInPowerOrder.length - 1) {
+          stringParts.push(`${h}${k}s:${formatProbability(startP)}`);
+        } else if (suitedStart === i + 1) {
+          stringParts.push(`${h}${k}s+:${formatProbability(startP)}`);
+        } else {
+          stringParts.push(
+            `${h}${startK}s-${h}${k}s:${formatProbability(startP)}`
+          );
+        }
+      }
+
+      let ofsuitStart = i + 1;
+
+      for (const [j, k] of ranksInPowerOrder.entries()) {
+        if (j < i + 1) continue;
+
+        const startK = ranksInPowerOrder[ofsuitStart]!;
+        const startP = rankPairs.get(`${h}${startK}o`) ?? null;
+        const p = rankPairs.get(`${h}${k}o`) ?? null;
+
+        if (startP === null && p !== null) {
+          ofsuitStart = j;
+        }
+
+        if (p === startP) continue;
+
+        if (startP !== null) {
+          const prevK = ranksInPowerOrder[j - 1]!;
+
+          if (ofsuitStart === j - 1) {
+            stringParts.push(`${h}${prevK}o:${formatProbability(startP!)}`);
+          } else if (ofsuitStart === i + 1) {
+            stringParts.push(`${h}${prevK}o+:${formatProbability(startP!)}`);
+          } else {
+            stringParts.push(
+              `${h}${startK}o-${h}${prevK}o:${formatProbability(startP!)}`
+            );
+          }
+        }
+
+        ofsuitStart = j;
+      }
+
+      if (
+        rankPairs.get(`${h}${ranksInPowerOrder[ofsuitStart]!}o`) !== undefined
+      ) {
+        const startK = ranksInPowerOrder[ofsuitStart]!;
+        const startP = rankPairs.get(`${h}${startK}o`)!;
+        const k = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
+
+        if (ofsuitStart === ranksInPowerOrder.length - 1) {
+          stringParts.push(`${h}${k}o:${formatProbability(startP)}`);
+        } else if (ofsuitStart === i + 1) {
+          stringParts.push(`${h}${k}o+:${formatProbability(startP)}`);
+        } else {
+          stringParts.push(
+            `${h}${startK}o-${h}${k}o:${formatProbability(startP)}`
+          );
+        }
+      }
+    }
+
+    for (const [i, hr] of ranksInPowerOrder.entries()) {
+      for (const kr of ranksInPowerOrder.slice(i)) {
+        for (const hs of suitsInOrder) {
+          for (const ks of suitsInOrder) {
+            const cardPair = CardSetUtils.from([
+              CardUtils.create(hr, hs),
+              CardUtils.create(kr, ks),
+            ]);
+            const p = detachedCardPairs.get(cardPair);
+
+            if (p !== undefined) {
+              stringParts.push(
+                `${CardSetUtils.format(cardPair, {
+                  sortInPower: true,
+                })}:${formatProbability(p)}`
+              );
+            }
+          }
+        }
+      }
     }
 
     return stringParts.join(",");
   },
 
-  /**
-   *
-   */
   toCardSetEnumeration(handRange: HandRange, base: number): CardSet[] {
     const cardSetEnumeration = [];
 
@@ -468,47 +498,31 @@ export const HandRangeUtils = Object.freeze({
   },
 });
 
-const ranks = [
-  Rank.Ace,
-  Rank.King,
-  Rank.Queen,
-  Rank.Jack,
-  Rank.Ten,
-  Rank.Nine,
-  Rank.Eight,
-  Rank.Seven,
-  Rank.Six,
-  Rank.Five,
-  Rank.Four,
-  Rank.Trey,
-  Rank.Deuce,
-];
-
 function pocketCardPairs(rank: Rank): CardSet[] {
   return [
     CardSetUtils.from([
-      CardUtils.create(rank, Suit.Spade),
-      CardUtils.create(rank, Suit.Heart),
+      CardUtils.create(rank, "s"),
+      CardUtils.create(rank, "h"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(rank, Suit.Spade),
-      CardUtils.create(rank, Suit.Diamond),
+      CardUtils.create(rank, "s"),
+      CardUtils.create(rank, "d"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(rank, Suit.Spade),
-      CardUtils.create(rank, Suit.Club),
+      CardUtils.create(rank, "s"),
+      CardUtils.create(rank, "c"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(rank, Suit.Heart),
-      CardUtils.create(rank, Suit.Diamond),
+      CardUtils.create(rank, "h"),
+      CardUtils.create(rank, "d"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(rank, Suit.Heart),
-      CardUtils.create(rank, Suit.Club),
+      CardUtils.create(rank, "h"),
+      CardUtils.create(rank, "c"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(rank, Suit.Diamond),
-      CardUtils.create(rank, Suit.Club),
+      CardUtils.create(rank, "d"),
+      CardUtils.create(rank, "c"),
     ]),
   ];
 }
@@ -516,20 +530,20 @@ function pocketCardPairs(rank: Rank): CardSet[] {
 function suitedCardPairs(high: Rank, kicker: Rank): CardSet[] {
   return [
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Spade),
-      CardUtils.create(kicker, Suit.Spade),
+      CardUtils.create(high, "s"),
+      CardUtils.create(kicker, "s"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Heart),
-      CardUtils.create(kicker, Suit.Heart),
+      CardUtils.create(high, "h"),
+      CardUtils.create(kicker, "h"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Diamond),
-      CardUtils.create(kicker, Suit.Diamond),
+      CardUtils.create(high, "d"),
+      CardUtils.create(kicker, "d"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Club),
-      CardUtils.create(kicker, Suit.Club),
+      CardUtils.create(high, "c"),
+      CardUtils.create(kicker, "c"),
     ]),
   ];
 }
@@ -537,52 +551,52 @@ function suitedCardPairs(high: Rank, kicker: Rank): CardSet[] {
 function ofsuitCardPairs(high: Rank, kicker: Rank): CardSet[] {
   return [
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Spade),
-      CardUtils.create(kicker, Suit.Heart),
+      CardUtils.create(high, "s"),
+      CardUtils.create(kicker, "h"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Spade),
-      CardUtils.create(kicker, Suit.Diamond),
+      CardUtils.create(high, "s"),
+      CardUtils.create(kicker, "d"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Spade),
-      CardUtils.create(kicker, Suit.Club),
+      CardUtils.create(high, "s"),
+      CardUtils.create(kicker, "c"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Heart),
-      CardUtils.create(kicker, Suit.Spade),
+      CardUtils.create(high, "h"),
+      CardUtils.create(kicker, "s"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Heart),
-      CardUtils.create(kicker, Suit.Diamond),
+      CardUtils.create(high, "h"),
+      CardUtils.create(kicker, "d"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Heart),
-      CardUtils.create(kicker, Suit.Club),
+      CardUtils.create(high, "h"),
+      CardUtils.create(kicker, "c"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Diamond),
-      CardUtils.create(kicker, Suit.Spade),
+      CardUtils.create(high, "d"),
+      CardUtils.create(kicker, "s"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Diamond),
-      CardUtils.create(kicker, Suit.Heart),
+      CardUtils.create(high, "d"),
+      CardUtils.create(kicker, "h"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Diamond),
-      CardUtils.create(kicker, Suit.Club),
+      CardUtils.create(high, "d"),
+      CardUtils.create(kicker, "c"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Club),
-      CardUtils.create(kicker, Suit.Spade),
+      CardUtils.create(high, "c"),
+      CardUtils.create(kicker, "s"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Club),
-      CardUtils.create(kicker, Suit.Heart),
+      CardUtils.create(high, "c"),
+      CardUtils.create(kicker, "h"),
     ]),
     CardSetUtils.from([
-      CardUtils.create(high, Suit.Club),
-      CardUtils.create(kicker, Suit.Diamond),
+      CardUtils.create(high, "c"),
+      CardUtils.create(kicker, "d"),
     ]),
   ];
 }
@@ -602,5 +616,11 @@ function parseProbability(probabilityString: string): number {
 function formatProbability(probability: number): string {
   if (probability % 1 === 0) return `${probability}`;
 
-  return probability.toFixed(2);
+  const fixed = probability.toFixed(3);
+
+  if (/\.[1-9]*0+$/.test(fixed)) {
+    return fixed.replace(/0+$/, "");
+  }
+
+  return fixed;
 }

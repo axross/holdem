@@ -1,5 +1,5 @@
-import { Rank, RankChar, RankUtils } from "./rank";
-import { Suit, SuitChar, SuitUtils } from "./suit";
+import { Rank, ranksInOrder, RankUtils } from "./rank";
+import { Suit, suitsInOrder, SuitUtils } from "./suit";
 
 /**
  * An integer value that expresses a card. This value is always `2^0 <= n <= 2^51`.
@@ -26,7 +26,7 @@ export type Card = number & {
  * "Tc" as CardString;  // ten of club
  * ```
  */
-export type CardString = `${RankChar}${SuitChar}`;
+export type CardString = `${Rank}${Suit}`;
 
 /**
  * A utility function set for Cards.
@@ -36,7 +36,8 @@ export const CardUtils = Object.freeze({
    * Creates a Card from a given pair of Rank and Suit.
    */
   create(rank: Rank, suit: Suit): Card {
-    return (2 ** (rank + suit * 13)) as Card;
+    return (2 **
+      (ranksInOrder.indexOf(rank) + suitsInOrder.indexOf(suit) * 13)) as Card;
   },
 
   /**
@@ -44,9 +45,9 @@ export const CardUtils = Object.freeze({
    *
    * @example
    * ```ts
-   * CardUtils.parse("As") === CardUtils.create(Rank.Ace, Suit.Spade);
-   * CardUtils.parse("2s") === CardUtils.create(Rank.Deuce, Suit.Spade);
-   * CardUtils.parse("Kc") === CardUtils.create(Rank.King, Suit.Club);
+   * CardUtils.parse("As") === CardUtils.create("A", "s");
+   * CardUtils.parse("2s") === CardUtils.create("2", "s");
+   * CardUtils.parse("Kc") === CardUtils.create("K", "c");
    * ```
    */
   parse(string: string): Card {
@@ -57,8 +58,8 @@ export const CardUtils = Object.freeze({
     }
 
     return CardUtils.create(
-      RankUtils.parse(string[0] as RankChar),
-      SuitUtils.parse(string[1] as SuitChar)
+      RankUtils.parse(string[0]!),
+      SuitUtils.parse(string[1]!)
     );
   },
 
@@ -79,14 +80,14 @@ export const CardUtils = Object.freeze({
    *
    * @example
    * ```
-   * CardUtils.rankOf(CardUtils.parse("As")) === Rank.Ace;
-   * CardUtils.rankOf(CardUtils.parse("3h")) === Rank.Trey;
-   * CardUtils.rankOf(CardUtils.parse("Td")) === Rank.Ten;
-   * CardUtils.rankOf(CardUtils.parse("6c")) === Rank.Six;
+   * CardUtils.rankOf(CardUtils.parse("As")) === "A";
+   * CardUtils.rankOf(CardUtils.parse("3h")) === "3";
+   * CardUtils.rankOf(CardUtils.parse("Td")) === "T";
+   * CardUtils.rankOf(CardUtils.parse("6c")) === "6";
    * ```
    */
   rankOf(card: Card): Rank {
-    return Math.log2(card) % 13;
+    return ranksInOrder[Math.log2(card) % 13]!;
   },
 
   /**
@@ -94,14 +95,14 @@ export const CardUtils = Object.freeze({
    *
    * @example
    * ```
-   * CardUtils.suitOf(CardUtils.parse("As")) === Suit.Spade;
-   * CardUtils.suitOf(CardUtils.parse("3h")) === Suit.Heart;
-   * CardUtils.suitOf(CardUtils.parse("Td")) === Suit.Diamond;
-   * CardUtils.suitOf(CardUtils.parse("6c")) === Suit.Club;
+   * CardUtils.suitOf(CardUtils.parse("As")) === "s";
+   * CardUtils.suitOf(CardUtils.parse("3h")) === "h";
+   * CardUtils.suitOf(CardUtils.parse("Td")) === "d";
+   * CardUtils.suitOf(CardUtils.parse("6c")) === "c";
    * ```
    */
   suitOf(card: Card): Suit {
-    return ~~(Math.log2(card) / 13);
+    return suitsInOrder[~~(Math.log2(card) / 13)]!;
   },
 
   /**
@@ -109,9 +110,9 @@ export const CardUtils = Object.freeze({
    *
    * @example
    * ```
-   * CardUtils.compare(Card(Rank.Ace, Suit.Spade), Card(Rank.Ace, Suit.Diamond));  // => negative integer
-   * CardUtils.compare(Card(Rank.Ace, Suit.Diamond), Card(Rank.Six, Suit.Heart));  // => positive integer
-   * CardUtils.compare(Card(Rank.Ace, Suit.Club), Card(Rank.Ace, Suit.Club));  // => 0
+   * CardUtils.compare(Card("A", "s"), Card("A", "d"));  // => negative integer
+   * CardUtils.compare(Card("A", "d"), Card("6", "h"));  // => positive integer
+   * CardUtils.compare(Card("A", "c"), Card("A", "c"));  // => 0
    * ```
    */
   compare(a: Card, b: Card): number {
@@ -126,10 +127,10 @@ export const CardUtils = Object.freeze({
    *
    * @example
    * ```
-   * CardUtils.comparePower(Card(Rank.Ace, Suit.Spade), Card(Rank.Ace, Suit.Diamond));  // => negative integer
-   * CardUtils.comparePower(Card(Rank.Ace, Suit.Diamond), Card(Rank.Six, Suit.Heart));  // => negative integer
-   * CardUtils.comparePower(Card(Rank.Queen, Suit.Spade), Card(Rank.Ace, Suit.Heart));  // => positive integer
-   * CardUtils.comparePower(Card(Rank.Ace, Suit.Club), Card(Rank.Ace, Suit.Club));  // => 0
+   * CardUtils.comparePower(Card("A", "s"), Card("A", "d"));  // => negative integer
+   * CardUtils.comparePower(Card("A", "d"), Card("6", "h"));  // => negative integer
+   * CardUtils.comparePower(Card("Q", "s"), Card("A", "h"));  // => positive integer
+   * CardUtils.comparePower(Card("A", "c"), Card("A", "c"));  // => 0
    * ```
    */
   comparePower(a: Card, b: Card): number {
@@ -144,15 +145,12 @@ export const CardUtils = Object.freeze({
    *
    * @example
    * ```
-   * CardUtils.format(CardUtils.create(Rank.Ace, Suit.Spade)) === ("As" as CardString);
-   * CardUtils.format(CardUtils.create(Rank.Deuce, Suit.Spade)) === ("2s" as CardString);
-   * CardUtils.format(CardUtils.create(Rank.King, Suit.Club)) === ("Kc" as CardString);
+   * CardUtils.format(CardUtils.create("A", "s")) === ("As" as CardString);
+   * CardUtils.format(CardUtils.create("2", "s")) === ("2s" as CardString);
+   * CardUtils.format(CardUtils.create("K", "c")) === ("Kc" as CardString);
    * ```
    */
   format(card: Card): CardString {
-    const rankChar = RankUtils.format(CardUtils.rankOf(card));
-    const suitChar = SuitUtils.format(CardUtils.suitOf(card));
-
-    return `${rankChar}${suitChar}`;
+    return `${CardUtils.rankOf(card)}${CardUtils.suitOf(card)}`;
   },
 });

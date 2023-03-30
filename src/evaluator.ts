@@ -84,7 +84,9 @@ export class MontecarloEvaluator implements Evaluator {
   }) {
     this.communityCards = communityCards;
     this.players = players;
-    this.playersArray = this.players.map((hr) => HandRangeUtils.toCardSetEnumeration(hr, 12));
+    this.playersArray = this.players.map((hr) =>
+      HandRangeUtils.toCardSetEnumeration(hr, 12)
+    );
   }
 
   /**
@@ -174,7 +176,9 @@ export class ExhaustiveEvaluator implements Evaluator {
   readonly players: HandRange[];
 
   *[Symbol.iterator](): Iterator<Matchup> {
-    const players = this.players.map((hr) => HandRangeUtils.toCardSetEnumeration(hr, 12));
+    const players = this.players.map((hr) =>
+      HandRangeUtils.toCardSetEnumeration(hr, 12)
+    );
     const stack: {
       deck: CardSet;
       holeCardPairs: CardSet[];

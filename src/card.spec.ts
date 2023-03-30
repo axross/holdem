@@ -1,45 +1,39 @@
-import { Card } from "..";
-import { CardUtils } from "./card";
-import { Rank } from "./rank";
-import { Suit } from "./suit";
+import { describe, expect, it } from "@jest/globals";
+import { Card, CardUtils } from "./card";
 
 describe("CardUtils.create()", () => {
-  it("creates Card<As> from Rank.Ace and Suit.Spade", () => {
-    expect(CardUtils.create(Rank.Ace, Suit.Spade)).toBe(1);
+  it('creates Card<As> from "A" and "s"', () => {
+    expect(CardUtils.create("A", "s")).toBe(1);
   });
 
-  it("creates Card<2s> from Rank.Deuce and Suit.Spade", () => {
-    expect(CardUtils.create(Rank.Deuce, Suit.Spade)).toBe(2);
+  it('creates Card<2s> from "2" and "s"', () => {
+    expect(CardUtils.create("2", "s")).toBe(2);
   });
 
-  it("creates Card<Ad> from Rank.Ace and Suit.Diamond", () => {
-    expect(CardUtils.create(Rank.Ace, Suit.Diamond)).toBe(2 ** 26);
+  it('creates Card<Ad> from "A" and "d"', () => {
+    expect(CardUtils.create("A", "d")).toBe(2 ** 26);
   });
 
-  it("creates Card<Ad> from Rank.King and Suit.Club", () => {
-    expect(CardUtils.create(Rank.King, Suit.Club)).toBe(2 ** 51);
+  it('creates Card<Ad> from "K" and "c"', () => {
+    expect(CardUtils.create("K", "c")).toBe(2 ** 51);
   });
 });
 
 describe("CardUtils.parse()", () => {
   it('parses "As" into Card<As>', () => {
-    expect(CardUtils.parse("As")).toBe(CardUtils.create(Rank.Ace, Suit.Spade));
+    expect(CardUtils.parse("As")).toBe(CardUtils.create("A", "s"));
   });
 
   it('parses "2s" into Card<2s>', () => {
-    expect(CardUtils.parse("2s")).toBe(
-      CardUtils.create(Rank.Deuce, Suit.Spade)
-    );
+    expect(CardUtils.parse("2s")).toBe(CardUtils.create("2", "s"));
   });
 
   it('parses "Ad" into Card<Ad>', () => {
-    expect(CardUtils.parse("Ad")).toBe(
-      CardUtils.create(Rank.Ace, Suit.Diamond)
-    );
+    expect(CardUtils.parse("Ad")).toBe(CardUtils.create("A", "d"));
   });
 
   it('parses "Kc" into Card<Ad>', () => {
-    expect(CardUtils.parse("Kc")).toBe(CardUtils.create(Rank.King, Suit.Club));
+    expect(CardUtils.parse("Kc")).toBe(CardUtils.create("K", "c"));
   });
 
   it('throws an error because "AS" is invalid string', () => {
@@ -79,54 +73,40 @@ describe("CardUtils.random()", () => {
 });
 
 describe("CardUtils.rankOf()", () => {
-  it("returns Rank.Ace from Card<As>", () => {
-    expect(CardUtils.rankOf(CardUtils.create(Rank.Ace, Suit.Spade))).toBe(
-      Rank.Ace
-    );
+  it('returns "A" from Card<As>', () => {
+    expect(CardUtils.rankOf(CardUtils.create("A", "s"))).toBe("A");
   });
 
-  it("returns Rank.Deuce from Card<2c>", () => {
-    expect(CardUtils.rankOf(CardUtils.create(Rank.Deuce, Suit.Club))).toBe(
-      Rank.Deuce
-    );
+  it('returns "2" from Card<2c>', () => {
+    expect(CardUtils.rankOf(CardUtils.create("2", "c"))).toBe("2");
   });
 
-  it("returns Rank.Nine from Card<9d>", () => {
-    expect(CardUtils.rankOf(CardUtils.create(Rank.Nine, Suit.Diamond))).toBe(
-      Rank.Nine
-    );
+  it('returns "9" from Card<9d>', () => {
+    expect(CardUtils.rankOf(CardUtils.create("9", "d"))).toBe("9");
   });
 
-  it("returns Rank.Queen from Card<Qh>", () => {
-    expect(CardUtils.rankOf(CardUtils.create(Rank.Queen, Suit.Heart))).toBe(
-      Rank.Queen
-    );
+  it('returns "Q" from Card<Qh>', () => {
+    expect(CardUtils.rankOf(CardUtils.create("Q", "h"))).toBe("Q");
   });
 });
 
 describe("CardUtils.suitOf", () => {
-  it("returns Suit.Spade from Card<As>", () => {
-    expect(CardUtils.suitOf(CardUtils.create(Rank.Ace, Suit.Spade))).toBe(
-      Suit.Spade
+  it('returns "s" from Card<As>', () => {
+    expect(CardUtils.suitOf(CardUtils.create("A", "s"))).toBe("s");
+  });
+
+  it('returns "c" from Card<2c>', () => {
+    expect(CardUtils.suitOf(CardUtils.create("2", "c"))).toBe("c");
+  });
+
+  it('returns "d" from Card<9d>', () => {
+    expect(CardUtils.suitOf(CardUtils.create("9", "d"))).toBe(
+      "d"
     );
   });
 
-  it("returns Suit.Club from Card<2c>", () => {
-    expect(CardUtils.suitOf(CardUtils.create(Rank.Deuce, Suit.Club))).toBe(
-      Suit.Club
-    );
-  });
-
-  it("returns Suit.Diamond from Card<9d>", () => {
-    expect(CardUtils.suitOf(CardUtils.create(Rank.Nine, Suit.Diamond))).toBe(
-      Suit.Diamond
-    );
-  });
-
-  it("returns Suit.Heart from Card<Qh>", () => {
-    expect(CardUtils.suitOf(CardUtils.create(Rank.Queen, Suit.Heart))).toBe(
-      Suit.Heart
-    );
+  it('returns "h" from Card<Qh>', () => {
+    expect(CardUtils.suitOf(CardUtils.create("Q", "h"))).toBe("h");
   });
 });
 
@@ -134,8 +114,8 @@ describe("CardUtils.compare()", () => {
   it("returns negative integer as comparison result of Card<As> and Card<Ad>", () => {
     expect(
       CardUtils.compare(
-        CardUtils.create(Rank.Ace, Suit.Spade),
-        CardUtils.create(Rank.Ace, Suit.Diamond)
+        CardUtils.create("A", "s"),
+        CardUtils.create("A", "d")
       )
     ).toBeLessThan(0);
   });
@@ -143,8 +123,8 @@ describe("CardUtils.compare()", () => {
   it("returns positive integer as comparison result of Card<Ad> and Card<6s>", () => {
     expect(
       CardUtils.compare(
-        CardUtils.create(Rank.Ace, Suit.Diamond),
-        CardUtils.create(Rank.Six, Suit.Heart)
+        CardUtils.create("A", "d"),
+        CardUtils.create("6", "h")
       )
     ).toBeGreaterThan(0);
   });
@@ -152,8 +132,8 @@ describe("CardUtils.compare()", () => {
   it("returns 0 as comparison result of Card<Ac> and Card<Ac>", () => {
     expect(
       CardUtils.compare(
-        CardUtils.create(Rank.Ace, Suit.Club),
-        CardUtils.create(Rank.Ace, Suit.Club)
+        CardUtils.create("A", "c"),
+        CardUtils.create("A", "c")
       )
     ).toBe(0);
   });
@@ -163,8 +143,8 @@ describe("CardUtils.comparePower()", () => {
   it("returns negative integer as comparison result of Card<As> and Card<Ad>", () => {
     expect(
       CardUtils.comparePower(
-        CardUtils.create(Rank.Ace, Suit.Spade),
-        CardUtils.create(Rank.Ace, Suit.Diamond)
+        CardUtils.create("A", "s"),
+        CardUtils.create("A", "d")
       )
     ).toBeLessThan(0);
   });
@@ -172,8 +152,8 @@ describe("CardUtils.comparePower()", () => {
   it("returns negative integer as comparison result of Card<Ad> and Card<6h>", () => {
     expect(
       CardUtils.comparePower(
-        CardUtils.create(Rank.Ace, Suit.Diamond),
-        CardUtils.create(Rank.Six, Suit.Heart)
+        CardUtils.create("A", "d"),
+        CardUtils.create("6", "h")
       )
     ).toBeLessThan(0);
   });
@@ -181,8 +161,8 @@ describe("CardUtils.comparePower()", () => {
   it("returns positive integer as comparison result of Card<Qs> and Card<Ah>", () => {
     expect(
       CardUtils.comparePower(
-        CardUtils.create(Rank.Queen, Suit.Spade),
-        CardUtils.create(Rank.Ace, Suit.Heart)
+        CardUtils.create("Q", "s"),
+        CardUtils.create("A", "h")
       )
     ).toBeGreaterThan(0);
   });
@@ -190,8 +170,8 @@ describe("CardUtils.comparePower()", () => {
   it("returns 0 as comparison result of Card<Ac> and Card<Ac>", () => {
     expect(
       CardUtils.comparePower(
-        CardUtils.create(Rank.Ace, Suit.Club),
-        CardUtils.create(Rank.Ace, Suit.Club)
+        CardUtils.create("A", "c"),
+        CardUtils.create("A", "c")
       )
     ).toBe(0);
   });
@@ -199,26 +179,18 @@ describe("CardUtils.comparePower()", () => {
 
 describe("CardUtils.format()", () => {
   it('stringifies Card<As> into "As"', () => {
-    expect(CardUtils.format(CardUtils.create(Rank.Ace, Suit.Spade))).toBe(
-      "As"
-    );
+    expect(CardUtils.format(CardUtils.create("A", "s"))).toBe("As");
   });
 
   it('stringifies Card<2c> into "2c"', () => {
-    expect(CardUtils.format(CardUtils.create(Rank.Deuce, Suit.Club))).toBe(
-      "2c"
-    );
+    expect(CardUtils.format(CardUtils.create("2", "c"))).toBe("2c");
   });
 
   it('stringifies Card<9d> into "9d"', () => {
-    expect(CardUtils.format(CardUtils.create(Rank.Nine, Suit.Diamond))).toBe(
-      "9d"
-    );
+    expect(CardUtils.format(CardUtils.create("9", "d"))).toBe("9d");
   });
 
   it('stringifies Card<Qh> into "Qh"', () => {
-    expect(CardUtils.format(CardUtils.create(Rank.Queen, Suit.Heart))).toBe(
-      "Qh"
-    );
+    expect(CardUtils.format(CardUtils.create("Q", "h"))).toBe("Qh");
   });
 });

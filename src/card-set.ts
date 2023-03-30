@@ -24,10 +24,10 @@ export const CardSetUtils = Object.freeze({
    * @example
    * ```ts
    * const cardSet = CardSet.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);
    * ```
    */
@@ -47,10 +47,10 @@ export const CardSetUtils = Object.freeze({
    * @example
    * ```ts
    * CardSetUtils.parse("AsQhJdKc") === CardSet.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);  // => true
    *
    * CardSetUtils.parse("") === CardSetUtils.empty;  // => true
@@ -81,10 +81,10 @@ export const CardSetUtils = Object.freeze({
    * @example
    * ```ts
    * const cardSet = CardSet.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);
    *
    * for (const card of CardSetUtils.iterate(cardSet)) {
@@ -100,7 +100,7 @@ export const CardSetUtils = Object.freeze({
 
       yield Number(card) as Card;
 
-      _cards = (_cards & (_cards - 1n));
+      _cards = _cards & (_cards - 1n);
     }
   },
 
@@ -110,10 +110,10 @@ export const CardSetUtils = Object.freeze({
    * @example
    * ```ts
    * const cardSet = CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);
    *
    * CardSetUtils.size(cardSet);             // => 4
@@ -137,23 +137,23 @@ export const CardSetUtils = Object.freeze({
    * @example
    * ```ts
    * const cardSet = CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);
    *
    * CardSetUtils.has(cardSet, CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("Q", "h"),
    * ]));  // => true
    *
    * CardSetUtils.has(cardSet, CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.Ace, Suit.Heart),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("A", "h"),
    * ]));  // => false
    *
-   * CardSetUtils.has(cardSet, CardUtils.create(Rank.Ace, Suit.Spade));  // => true
+   * CardSetUtils.has(cardSet, CardUtils.create("A", "s"));  // => true
    *
    * CardSetUtils.has(cardSet, CardSetUtils.empty);  // => true
    * ```
@@ -169,18 +169,18 @@ export const CardSetUtils = Object.freeze({
    * ```ts
    * CardSetUtils.union(
    *   CardSetUtils.from([
-   *     CardUtils.create(Rank.Ace, Suit.Spade),
-   *     CardUtils.create(Rank.Queen, Suit.Heart),
+   *     CardUtils.create("A", "s"),
+   *     CardUtils.create("Q", "h"),
    *   ]),
    *   CardSetUtils.from([
-   *     CardUtils.create(Rank.King, Suit.Club),
-   *     CardUtils.create(Rank.Jack, Suit.Diamond),
+   *     CardUtils.create("K", "c"),
+   *     CardUtils.create("J", "d"),
    *   ]),
    * ) === CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);
    * ```
    */
@@ -195,18 +195,18 @@ export const CardSetUtils = Object.freeze({
    * ```ts
    * CardSetUtils.union(
    *   CardSetUtils.from([
-   *     CardUtils.create(Rank.Ace, Suit.Spade),
-   *     CardUtils.create(Rank.Queen, Suit.Heart),
+   *     CardUtils.create("A", "s"),
+   *     CardUtils.create("Q", "h"),
    *   ]),
    *   CardSetUtils.from([
-   *     CardUtils.create(Rank.King, Suit.Club),
-   *     CardUtils.create(Rank.Jack, Suit.Diamond),
+   *     CardUtils.create("K", "c"),
+   *     CardUtils.create("J", "d"),
    *   ]),
    * ) === CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]);
    * ```
    */
@@ -220,10 +220,10 @@ export const CardSetUtils = Object.freeze({
    * @example
    * ```ts
    * CardSetUtils.from([
-   *   CardUtils.create(Rank.Ace, Suit.Spade),
-   *   CardUtils.create(Rank.King, Suit.Club),
-   *   CardUtils.create(Rank.Queen, Suit.Heart),
-   *   CardUtils.create(Rank.Jack, Suit.Diamond),
+   *   CardUtils.create("A", "s"),
+   *   CardUtils.create("K", "c"),
+   *   CardUtils.create("Q", "h"),
+   *   CardUtils.create("J", "d"),
    * ]).format() === "AsQhJdKc";
    * ```
    */
