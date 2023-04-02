@@ -327,134 +327,158 @@ export const HandRangeUtils = Object.freeze({
   format(handRange: HandRange): string {
     const rankPairs = HandRangeUtils.rankPairs(handRange);
     const detachedCardPairs = HandRangeUtils.detachedCardPairs(handRange);
-    const stringParts: string[] = [];
+    const parts = new Map<string, number>();
 
-    let start = 0;
-    for (const [i, r] of ranksInPowerOrder.entries()) {
-      const startR = ranksInPowerOrder[start]!;
-      const startP = rankPairs.get(startR.repeat(2)) ?? null;
-      const p = rankPairs.get(r.repeat(2)) ?? null;
+    let pocketStartRank: Rank | null = null;
 
-      if (startP === null && p !== null) {
-        start = i;
-      }
+    for (const [i, rank] of ranksInPowerOrder.entries()) {
+      const prob = rankPairs.get(`${rank}${rank}`) ?? null;
 
-      if (p === startP) continue;
+      if (pocketStartRank !== null) {
+        const startProb = rankPairs.get(
+          `${pocketStartRank}${pocketStartRank}`
+        )!;
 
-      if (startP !== null) {
-        const prevR = ranksInPowerOrder[i - 1]!;
+        if (prob !== startProb) {
+          const prevRank = ranksInPowerOrder[i - 1]!;
 
-        if (start === 0) {
-          stringParts.push(`${prevR}${prevR}+:${formatProbability(startP!)}`);
-        } else if (start === i - 1) {
-          stringParts.push(`${prevR}${prevR}:${formatProbability(startP!)}`);
-        } else {
-          stringParts.push(
-            `${startR}${startR}-${prevR}${prevR}:${formatProbability(startP!)}`
-          );
+          if (
+            pocketStartRank === ranksInPowerOrder[0] &&
+            prevRank !== ranksInPowerOrder[0]
+          ) {
+            parts.set(`${prevRank}${prevRank}+`, startProb);
+          } else if (pocketStartRank === prevRank) {
+            parts.set(`${prevRank}${prevRank}`, startProb);
+          } else {
+            parts.set(
+              `${pocketStartRank}${pocketStartRank}-${prevRank}${prevRank}`,
+              startProb
+            );
+          }
+
+          pocketStartRank = null;
         }
       }
 
-      start = i;
+      if (pocketStartRank === null && prob !== null) {
+        pocketStartRank = rank;
+      }
     }
 
-    for (const [i, h] of ranksInPowerOrder.entries()) {
-      let suitedStart = i + 1;
+    if (pocketStartRank !== null) {
+      const lastRank = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
+      const prob = rankPairs.get(`${pocketStartRank}${pocketStartRank}`)!;
 
-      for (const [j, k] of ranksInPowerOrder.entries()) {
-        if (j < i + 1) continue;
+      if (pocketStartRank === ranksInPowerOrder[0]) {
+        parts.set(`${lastRank}${lastRank}+`, prob);
+      } else if (pocketStartRank === lastRank) {
+        parts.set(`${pocketStartRank}${pocketStartRank}`, prob);
+      } else {
+        parts.set(
+          `${pocketStartRank}${pocketStartRank}-${lastRank}${lastRank}`,
+          prob
+        );
+      }
+    }
 
-        const startK = ranksInPowerOrder[suitedStart]!;
-        const startP = rankPairs.get(`${h}${startK}s`) ?? null;
-        const p = rankPairs.get(`${h}${k}s`) ?? null;
+    for (const [hi, highRank] of ranksInPowerOrder.entries()) {
+      const firstRank =
+        ranksInPowerOrder[Math.min(hi + 1, ranksInPowerOrder.length - 1)];
 
-        if (startP === null && p !== null) {
-          suitedStart = j;
-        }
+      let suitedStartRank: Rank | null = null;
 
-        if (p === startP) continue;
+      for (const [ki, rank] of ranksInPowerOrder.entries()) {
+        if (ki < hi + 1) continue;
 
-        if (startP !== null) {
-          const prevK = ranksInPowerOrder[j - 1]!;
+        const prob = rankPairs.get(`${highRank}${rank}s`) ?? null;
 
-          if (suitedStart === j - 1) {
-            stringParts.push(`${h}${prevK}s:${formatProbability(startP!)}`);
-          } else if (suitedStart === i + 1) {
-            stringParts.push(`${h}${prevK}s+:${formatProbability(startP!)}`);
-          } else {
-            stringParts.push(
-              `${h}${startK}s-${h}${prevK}s:${formatProbability(startP!)}`
-            );
+        if (suitedStartRank !== null) {
+          const startProb = rankPairs.get(`${highRank}${suitedStartRank}s`)!;
+
+          if (prob !== startProb) {
+            const prevRank = ranksInPowerOrder[ki - 1]!;
+
+            if (suitedStartRank === firstRank && prevRank !== firstRank) {
+              parts.set(`${highRank}${prevRank}s+`, startProb);
+            } else if (suitedStartRank === prevRank) {
+              parts.set(`${highRank}${prevRank}s`, startProb);
+            } else {
+              parts.set(
+                `${highRank}${suitedStartRank}s-${highRank}${prevRank}s`,
+                startProb
+              );
+            }
+
+            suitedStartRank = null;
           }
         }
 
-        suitedStart = j;
+        if (suitedStartRank === null && prob !== null) {
+          suitedStartRank = rank;
+        }
       }
 
-      if (
-        rankPairs.get(`${h}${ranksInPowerOrder[suitedStart]!}s`) !== undefined
-      ) {
-        const startK = ranksInPowerOrder[suitedStart]!;
-        const startP = rankPairs.get(`${h}${startK}s`)!;
-        const k = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
+      if (suitedStartRank !== null) {
+        const prob = rankPairs.get(`${highRank}${suitedStartRank}s`)!;
+        const lastRank = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
 
-        if (suitedStart === ranksInPowerOrder.length - 1) {
-          stringParts.push(`${h}${k}s:${formatProbability(startP)}`);
-        } else if (suitedStart === i + 1) {
-          stringParts.push(`${h}${k}s+:${formatProbability(startP)}`);
+        if (suitedStartRank === firstRank && lastRank !== firstRank) {
+          parts.set(`${highRank}${lastRank}s+`, prob);
+        } else if (suitedStartRank === lastRank) {
+          parts.set(`${highRank}${suitedStartRank}s`, prob);
         } else {
-          stringParts.push(
-            `${h}${startK}s-${h}${k}s:${formatProbability(startP)}`
+          parts.set(
+            `${highRank}${suitedStartRank}s-${highRank}${lastRank}s`,
+            prob
           );
         }
       }
 
-      let ofsuitStart = i + 1;
+      let ofsuitStartRank: Rank | null = null;
 
-      for (const [j, k] of ranksInPowerOrder.entries()) {
-        if (j < i + 1) continue;
+      for (const [ki, rank] of ranksInPowerOrder.entries()) {
+        if (ki < hi + 1) continue;
 
-        const startK = ranksInPowerOrder[ofsuitStart]!;
-        const startP = rankPairs.get(`${h}${startK}o`) ?? null;
-        const p = rankPairs.get(`${h}${k}o`) ?? null;
+        const prob = rankPairs.get(`${highRank}${rank}o`) ?? null;
 
-        if (startP === null && p !== null) {
-          ofsuitStart = j;
-        }
+        if (ofsuitStartRank !== null) {
+          const startProb = rankPairs.get(`${highRank}${ofsuitStartRank}o`)!;
 
-        if (p === startP) continue;
+          if (prob !== startProb) {
+            const prevRank = ranksInPowerOrder[ki - 1]!;
 
-        if (startP !== null) {
-          const prevK = ranksInPowerOrder[j - 1]!;
+            if (ofsuitStartRank === firstRank && prevRank !== firstRank) {
+              parts.set(`${highRank}${prevRank}o+`, startProb);
+            } else if (ofsuitStartRank === prevRank) {
+              parts.set(`${highRank}${prevRank}o`, startProb);
+            } else {
+              parts.set(
+                `${highRank}${ofsuitStartRank}o-${highRank}${prevRank}o`,
+                startProb
+              );
+            }
 
-          if (ofsuitStart === j - 1) {
-            stringParts.push(`${h}${prevK}o:${formatProbability(startP!)}`);
-          } else if (ofsuitStart === i + 1) {
-            stringParts.push(`${h}${prevK}o+:${formatProbability(startP!)}`);
-          } else {
-            stringParts.push(
-              `${h}${startK}o-${h}${prevK}o:${formatProbability(startP!)}`
-            );
+            ofsuitStartRank = null;
           }
         }
 
-        ofsuitStart = j;
+        if (ofsuitStartRank === null && prob !== null) {
+          ofsuitStartRank = rank;
+        }
       }
 
-      if (
-        rankPairs.get(`${h}${ranksInPowerOrder[ofsuitStart]!}o`) !== undefined
-      ) {
-        const startK = ranksInPowerOrder[ofsuitStart]!;
-        const startP = rankPairs.get(`${h}${startK}o`)!;
-        const k = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
+      if (ofsuitStartRank !== null) {
+        const prob = rankPairs.get(`${highRank}${ofsuitStartRank}o`)!;
+        const lastRank = ranksInPowerOrder[ranksInPowerOrder.length - 1]!;
 
-        if (ofsuitStart === ranksInPowerOrder.length - 1) {
-          stringParts.push(`${h}${k}o:${formatProbability(startP)}`);
-        } else if (ofsuitStart === i + 1) {
-          stringParts.push(`${h}${k}o+:${formatProbability(startP)}`);
+        if (ofsuitStartRank === firstRank && lastRank !== firstRank) {
+          parts.set(`${highRank}${lastRank}o+`, prob);
+        } else if (ofsuitStartRank === lastRank) {
+          parts.set(`${highRank}${ofsuitStartRank}o`, prob);
         } else {
-          stringParts.push(
-            `${h}${startK}o-${h}${k}o:${formatProbability(startP)}`
+          parts.set(
+            `${highRank}${ofsuitStartRank}o-${highRank}${lastRank}o`,
+            prob
           );
         }
       }
@@ -464,17 +488,18 @@ export const HandRangeUtils = Object.freeze({
       for (const kr of ranksInPowerOrder.slice(i)) {
         for (const hs of suitsInOrder) {
           for (const ks of suitsInOrder) {
-            const cardPair = CardSetUtils.from([
+            const pairA = CardSetUtils.from([
               CardUtils.create(hr, hs),
               CardUtils.create(kr, ks),
             ]);
-            const p = detachedCardPairs.get(cardPair);
+            const probA = detachedCardPairs.get(pairA) ?? null;
 
-            if (p !== undefined) {
-              stringParts.push(
-                `${CardSetUtils.format(cardPair, {
+            if (probA !== null) {
+              parts.set(
+                `${CardSetUtils.format(pairA, {
                   sortInPower: true,
-                })}:${formatProbability(p)}`
+                })}`,
+                probA
               );
             }
           }
@@ -482,7 +507,10 @@ export const HandRangeUtils = Object.freeze({
       }
     }
 
-    return stringParts.join(",");
+    return Array.from(
+      parts.entries(),
+      ([part, prob]) => `${part}:${formatProbability(prob)}`
+    ).join(",");
   },
 
   toCardSetEnumeration(handRange: HandRange, base: number): CardSet[] {
