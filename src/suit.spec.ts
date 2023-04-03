@@ -1,51 +1,42 @@
-import { describe, expect, it } from "@jest/globals";
-import { SuitUtils } from "./suit";
+import { describe, expect, it, test } from "@jest/globals";
+import { Suit } from "./suit";
 
-describe("SuitUtils.parse()", () => {
-  it.concurrent.each([
-    ["s", "s"],
-    ["h", "h"],
-    ["d", "d"],
-    ["c", "c"],
-  ])("parses %s into Suit<%i>", async (char, suit) => {
-    expect(SuitUtils.parse(char)).toBe(suit);
+describe("Suit.parse()", () => {
+  it('parses "s" into Suit.Spade', () => {
+    expect(Suit.parse("s")).toBe(Suit.Spade);
   });
 
-  it('parses "s" into "s"', () => {
-    expect(SuitUtils.parse("s")).toBe("s");
+  it('parses "h" into Suit.Heart', () => {
+    expect(Suit.parse("h")).toBe(Suit.Heart);
   });
 
-  it('parses "h" into "h"', () => {
-    expect(SuitUtils.parse("h")).toBe("h");
+  it('parses "d" into Suit.Diamond', () => {
+    expect(Suit.parse("d")).toBe(Suit.Diamond);
   });
 
-  it('parses "d" into "d"', () => {
-    expect(SuitUtils.parse("d")).toBe("d");
-  });
-
-  it('parses "c" into "c"', () => {
-    expect(SuitUtils.parse("c")).toBe("c");
+  it('parses "c" into Suit.Club', () => {
+    expect(Suit.parse("c")).toBe(Suit.Club);
   });
 
   it('throws an error because "S" is not a valid string', () => {
-    expect(() => SuitUtils.parse("S")).toThrowErrorMatchingSnapshot();
+    expect(() => Suit.parse("S")).toThrowErrorMatchingInlineSnapshot(`""S" is not a valid value for Suit.parse()."`);
   });
 
   it('throws an error because "" is not a valid string', () => {
-    expect(() => SuitUtils.parse("")).toThrowErrorMatchingSnapshot();
+    expect(() => Suit.parse("")).toThrowErrorMatchingInlineSnapshot(`""" is not a valid value for Suit.parse()."`);
   });
 });
 
-describe("RankUtils.compare()", () => {
-  it('returns negative integer as comparison result of "s" and "h"', () => {
-    expect(SuitUtils.compare("s", "h")).toBeLessThan(0);
+describe("Suit#compare()", () => {
+  test("Suit.Spade.compare(Suit.Heart) returns negative integer", () => {
+    expect(Suit.Spade.compare(Suit.Heart)).toBeLessThan(0);
   });
 
-  it('returns positive integer as comparison result of "c" and "h"', () => {
-    expect(SuitUtils.compare("c", "h")).toBeGreaterThan(0);
+  test("Suit.Club.compare(Suit.Heart) returns positive integer", () => {
+    expect(Suit.Club.compare(Suit.Heart)).toBeGreaterThan(0);
   });
 
-  it('returns 0 as comparison result of "h" and "h"', () => {
-    expect(SuitUtils.compare("h", "h")).toBe(0);
+  test("Suit.Heart.compare(Suit.Heart) returns 0", () => {
+    expect(Suit.Heart.compare(Suit.Heart)).toBe(0);
   });
 });

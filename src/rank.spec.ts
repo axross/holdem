@@ -1,98 +1,86 @@
 import { describe, expect, it } from "@jest/globals";
-import { RankUtils } from "./rank";
+import { Rank } from "./rank";
 
-describe("RankUtils.parse()", () => {
-  it('parses "A" into "A"', () => {
-    expect(RankUtils.parse("A")).toBe("A");
+describe("Rank.parse()", () => {
+  it('parses "A" into Rank.Ace', () => {
+    expect(Rank.parse("A")).toBe(Rank.Ace);
   });
 
-  it('parses "K" into "K"', () => {
-    expect(RankUtils.parse("K")).toBe("K");
+  it('parses "K" into Rank.King', () => {
+    expect(Rank.parse("K")).toBe(Rank.King);
   });
 
-  it('parses "Q" into "Q"', () => {
-    expect(RankUtils.parse("Q")).toBe("Q");
+  it('parses "Q" into Rank.Queen', () => {
+    expect(Rank.parse("Q")).toBe(Rank.Queen);
   });
 
-  it('parses "J" into "J"', () => {
-    expect(RankUtils.parse("J")).toBe("J");
+  it('parses "J" into Rank.Jack', () => {
+    expect(Rank.parse("J")).toBe(Rank.Jack);
   });
 
-  it('parses "T" into "T"', () => {
-    expect(RankUtils.parse("T")).toBe("T");
+  it('parses "T" into Rank.Ten', () => {
+    expect(Rank.parse("T")).toBe(Rank.Ten);
   });
 
-  it('parses "9" into "9"', () => {
-    expect(RankUtils.parse("9")).toBe("9");
+  it('parses "9" into Rank.Nine', () => {
+    expect(Rank.parse("9")).toBe(Rank.Nine);
   });
 
-  it('parses "8" into "8"', () => {
-    expect(RankUtils.parse("8")).toBe("8");
+  it('parses "8" into Rank.Eight', () => {
+    expect(Rank.parse("8")).toBe(Rank.Eight);
   });
 
-  it('parses "7" into "7"', () => {
-    expect(RankUtils.parse("7")).toBe("7");
+  it('parses "7" into Rank.Seven', () => {
+    expect(Rank.parse("7")).toBe(Rank.Seven);
   });
 
-  it('parses "6" into "6"', () => {
-    expect(RankUtils.parse("6")).toBe("6");
+  it('parses "6" into Rank.Six', () => {
+    expect(Rank.parse("6")).toBe(Rank.Six);
   });
 
-  it('parses "5" into "5"', () => {
-    expect(RankUtils.parse("5")).toBe("5");
+  it('parses "5" into Rank.Five', () => {
+    expect(Rank.parse("5")).toBe(Rank.Five);
   });
 
-  it('parses "4" into "4"', () => {
-    expect(RankUtils.parse("4")).toBe("4");
+  it('parses "4" into Rank.Four', () => {
+    expect(Rank.parse("4")).toBe(Rank.Four);
   });
 
-  it('parses "3" into "3"', () => {
-    expect(RankUtils.parse("3")).toBe("3");
+  it('parses "3" into Rank.Trey', () => {
+    expect(Rank.parse("3")).toBe(Rank.Trey);
   });
 
-  it('parses "2" into "2"', () => {
-    expect(RankUtils.parse("2")).toBe("2");
+  it('parses "2" into Rank.Deuce', () => {
+    expect(Rank.parse("2")).toBe(Rank.Deuce);
   });
 
   it('throws an error because "a" is not a valid string', () => {
-    expect(() => RankUtils.parse("a")).toThrowErrorMatchingSnapshot();
+    expect(() => Rank.parse("a")).toThrowErrorMatchingInlineSnapshot(
+      `""a" is not a valid value for Rank.parse()."`
+    );
   });
 
   it('throws an error because "" is not a valid string', () => {
-    expect(() => RankUtils.parse("")).toThrowErrorMatchingSnapshot();
+    expect(() => Rank.parse("")).toThrowErrorMatchingInlineSnapshot(
+      `""" is not a valid value for Rank.parse()."`
+    );
   });
 });
 
-describe("RankUtils.compare()", () => {
-  it('returns negative integer as comparison result of "A" and "2"', () => {
-    expect(RankUtils.compare("A", "2")).toBeLessThan(0);
+describe("Rank#compare()", () => {
+  test("Rank.Ace.compare(Rank.King) returns negative integer", () => {
+    expect(Rank.Ace.compare(Rank.King)).toBeLessThan(0);
   });
 
-  it('returns positive integer as comparison result of "4" and "A"', () => {
-    expect(RankUtils.compare("4", "A")).toBeGreaterThan(0);
+  test("Rank.Five.compare(Rank.Eight) returns positive integer", () => {
+    expect(Rank.Five.compare(Rank.Eight)).toBeGreaterThan(0);
   });
 
-  it('returns 0 as comparison result of "6" and "6"', () => {
-    expect(RankUtils.compare("6", "6")).toBe(0);
-  });
-});
-
-describe("RankUtils.comparePower()", () => {
-  it('returns negative integer as comparison result of "A" and "K"', () => {
-    expect(RankUtils.comparePower("A", "K")).toBeLessThan(0);
+  test("Rank.Ten.compare(Rank.Ten) returns 0", () => {
+    expect(Rank.Ten.compare(Rank.Ten)).toBe(0);
   });
 
-  it('returns positive integer as comparison result of "Q" and "5"', () => {
-    expect(RankUtils.comparePower("5", "8")).toBeGreaterThan(0);
-  });
-
-  it('returns 0 as comparison result of "T" and "T"', () => {
-    expect(RankUtils.comparePower("T", "T")).toBe(0);
-  });
-
-  it('returns negative integer as comparison result of "K" and "2"', () => {
-    expect(RankUtils.comparePower("K", "2")).toBeLessThan(0);
+  test("Rank.King.compare(Rank.Deuce) returns negative integer", () => {
+    expect(Rank.King.compare(Rank.Deuce)).toBeLessThan(0);
   });
 });
-
-

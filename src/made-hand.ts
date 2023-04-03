@@ -1,15 +1,7 @@
-import { CardUtils } from "./card";
-import { CardSet, CardSetUtils } from "./card-set";
+import { CardSet } from "./card-set";
 import { asFlush, asRainbow, dpReference } from "./precalculated-table";
-import { Rank, ranksInOrder } from "./rank";
-import { Suit, suitsInOrder } from "./suit";
-
-/**
- * An index of [Cactus Kev's poker hand equivalence enums](http://suffe.cool/poker/7462.html).
- */
-export type MadeHand = number & {
-  __MadeHandBrand: never;
-};
+import { Rank } from "./rank";
+import { Suit } from "./suit";
 
 export type MadeHandType =
   | "highcard"
@@ -22,53 +14,58 @@ export type MadeHandType =
   | "quads"
   | "straight-flush";
 
-export const MadeHandUtils = Object.freeze({
+/**
+ * The final hand that player made at showdown.
+ */
+export class MadeHand {
   /**
-   *
+   * Returns the MadeHand with the highest power index.
    */
-  findBestFrom(cards: CardSet): MadeHand {
+  static findBestFrom(cards: CardSet): MadeHand {
     const flushSuit = findFlushSuit(cards);
 
     if (flushSuit !== null) {
-      return asFlush[hashForFlush(cards, flushSuit)]! as MadeHand;
+      return new MadeHand(asFlush[hashForFlush(cards, flushSuit)]!);
     }
 
-    return asRainbow[hashForRainbow(cards)]! as MadeHand;
-  },
+    return new MadeHand(asRainbow[hashForRainbow(cards)]!);
+  }
+
+  private constructor(powerIndex: number) {
+    this.powerIndex = powerIndex;
+  }
 
   /**
-   *
+   * The power index of the MadeHand. `0` is the strongest (the top straight flush), `7462` is the worst trash hand.
    */
-  power(madeHand: MadeHand): number {
-    return 7462 - madeHand;
-  },
+  readonly powerIndex: number;
 
   /**
-   *
+   * The type of MadeHand.
    */
-  type(madeHand: MadeHand): MadeHandType {
-    if (madeHand > 6185) return "highcard";
-    if (madeHand > 3325) return "pair";
-    if (madeHand > 2467) return "two-pairs";
-    if (madeHand > 1609) return "trips";
-    if (madeHand > 1599) return "straight";
-    if (madeHand > 322) return "flush";
-    if (madeHand > 166) return "full-house";
-    if (madeHand > 10) return "quads";
+  get type(): MadeHandType {
+    if (this.powerIndex > 6185) return "highcard";
+    if (this.powerIndex > 3325) return "pair";
+    if (this.powerIndex > 2467) return "two-pairs";
+    if (this.powerIndex > 1609) return "trips";
+    if (this.powerIndex > 1599) return "straight";
+    if (this.powerIndex > 322) return "flush";
+    if (this.powerIndex > 166) return "full-house";
+    if (this.powerIndex > 10) return "quads";
 
     return "straight-flush";
-  },
-});
+  }
+}
 
 function findFlushSuit(cards: CardSet): Suit | null {
   const suitCount = [0, 0, 0, 0];
   let suit: Suit | null = null;
 
-  for (const card of CardSetUtils.iterate(cards)) {
-    suitCount[suitsInOrder.indexOf(CardUtils.suitOf(card))] += 1;
+  for (const card of cards) {
+    suitCount[suitsInOrder.indexOf(card.suit)] += 1;
 
-    if (suitCount[suitsInOrder.indexOf(CardUtils.suitOf(card))]! === 5) {
-      suit = CardUtils.suitOf(card);
+    if (suitCount[suitsInOrder.indexOf(card.suit)]! === 5) {
+      suit = card.suit;
     }
   }
 
@@ -78,9 +75,9 @@ function findFlushSuit(cards: CardSet): Suit | null {
 function hashForFlush(cards: CardSet, suit: Suit): number {
   let hash = 0;
 
-  for (const card of CardSetUtils.iterate(cards)) {
-    if (CardUtils.suitOf(card) === suit) {
-      hash += bitEachRank[ranksInOrder.indexOf(CardUtils.rankOf(card))]!;
+  for (const card of cards) {
+    if (card.suit === suit) {
+      hash += bitEachRank[ranksInOrder.indexOf(card.rank)]!;
     }
   }
 
@@ -96,8 +93,8 @@ function hashForRainbow(cards: CardSet): number {
   const cardLengthEachRank = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   let remainingCardLength = 0;
 
-  for (const card of CardSetUtils.iterate(cards)) {
-    cardLengthEachRank[ranksInOrder.indexOf(CardUtils.rankOf(card))] += 1;
+  for (const card of cards) {
+    cardLengthEachRank[ranksInOrder.indexOf(card.rank)] += 1;
     remainingCardLength += 1;
   }
 
@@ -108,7 +105,7 @@ function hashForRainbow(cards: CardSet): number {
 
     if (length === 0) continue;
 
-    hash += dpReference[length]![rank]![remainingCardLength]!;
+    hash += dpReference[length]!.get(rank)![remainingCardLength]!;
     remainingCardLength -= length;
 
     if (remainingCardLength <= 0) break;
@@ -117,18 +114,36 @@ function hashForRainbow(cards: CardSet): number {
   return hash;
 }
 
+const ranksInOrder: Rank[] = [
+  Rank.Ace,
+  Rank.Deuce,
+  Rank.Trey,
+  Rank.Four,
+  Rank.Five,
+  Rank.Six,
+  Rank.Seven,
+  Rank.Eight,
+  Rank.Nine,
+  Rank.Ten,
+  Rank.Jack,
+  Rank.Queen,
+  Rank.King,
+];
+
+const suitsInOrder: Suit[] = [Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club];
+
 const ranks: Rank[] = [
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "T",
-  "J",
-  "Q",
-  "K",
-  "A",
+  Rank.Deuce,
+  Rank.Trey,
+  Rank.Four,
+  Rank.Five,
+  Rank.Six,
+  Rank.Seven,
+  Rank.Eight,
+  Rank.Nine,
+  Rank.Ten,
+  Rank.Jack,
+  Rank.Queen,
+  Rank.King,
+  Rank.Ace,
 ];

@@ -1,106 +1,181 @@
-import { CardUtils } from "./card";
-import { CardSet, CardSetUtils } from "./card-set";
-import { HandRange, HandRangeUtils } from "./hand-range";
-import { MadeHand, MadeHandUtils } from "./made-hand";
+import { Card } from "./card";
+import { CardSet } from "./card-set";
+import { HandRange } from "./hand-range";
+import { MadeHand } from "./made-hand";
+import { Rank } from "./rank";
+import { Suit } from "./suit";
 
 /**
+ * A class that evaluates equity of each player in a certain situation.
  *
- */
-export interface Evaluator extends Iterable<Matchup> {
-  /**
-   *
-   */
-  communityCards: CardSet;
-
-  /**
-   *
-   */
-  players: HandRange[];
-}
-
-/**
- * Compares hands in best form that each one can make.
+ * You can use either of:
  *
- * @internal
+ * - `new MontecarloEvaluator()` - randomly decides the possible situations can come and evaluate equities.
+ * - `new ExhaustiveEvaluator()` - exhaustively iterates all the possible situations and evaluate equities.
+ *
+ * Evaluator implements `Iterable<Matchup>` so you can use it in for-loop.
+ *
+ * @example
+ * ```ts
+ * const evaluator = new ExhaustiveEvaluator({
+ *   board: CardSet.parse("AsKcQh2d"),
+ *   players: [
+ *     HandRange.parse("KdJd"),
+ *     HandRange.parse("Ah3h"),
+ *   ],
+ * });
+ *
+ * for (const matchup of evaluator) {
+ *   // ...
+ * }
+ * ```
  */
-export function showdown(
-  holeCardPairs: CardSet[],
-  communityCards: CardSet
-): Matchup {
-  const hands: MadeHand[] = [];
-  const wonPlayerIndexes = new Set<number>();
-  let maxPower = -1;
+export abstract class Evaluator implements Iterable<Matchup> {
+  constructor({
+    board,
+    players,
+    probabilityResolution = 12,
+  }: {
+    board: Evaluator["board"];
+    players: Evaluator["players"];
+    /**
+     * The resolution of probability. Default is `12`.
+     */
+    probabilityResolution?: number;
+  }) {
+    this.board = board;
+    this.players = players;
+    this.resolvedPlayers = this.players.map((handRange) => {
+      const cardSetList = [];
 
-  for (const [i, holeCardPair] of holeCardPairs.entries()) {
-    const madeHand = MadeHandUtils.findBestFrom(
-      CardSetUtils.union(holeCardPair, communityCards)
-    );
-    const power = MadeHandUtils.power(madeHand);
-
-    hands.push(madeHand);
-
-    if (power >= maxPower) {
-      if (power > maxPower) {
-        wonPlayerIndexes.clear();
-
-        maxPower = power;
+      for (const [cardSet, probability] of handRange) {
+        for (
+          let i = 0;
+          i < Math.round(probability * probabilityResolution);
+          ++i
+        ) {
+          cardSetList.push(cardSet);
+        }
       }
 
-      wonPlayerIndexes.add(i);
-    }
-  }
-
-  return {
-    communityCards,
-    holeCardPairs,
-    hands,
-    wonPlayerIndexes,
-  };
-}
-
-/**
- *
- */
-export interface Matchup {
-  readonly communityCards: CardSet;
-
-  readonly holeCardPairs: CardSet[];
-
-  readonly hands: MadeHand[];
-
-  readonly wonPlayerIndexes: Set<number>;
-}
-
-/**
- *
- */
-export class MontecarloEvaluator implements Evaluator {
-  constructor({
-    communityCards,
-    players,
-  }: {
-    communityCards: CardSet;
-    players: HandRange[];
-  }) {
-    this.communityCards = communityCards;
-    this.players = players;
-    this.playersArray = this.players.map((hr) =>
-      HandRangeUtils.toCardSetEnumeration(hr, 12)
-    );
+      return cardSetList;
+    });
   }
 
   /**
-   *
+   * The initial board cards for the situation.
    */
-  readonly communityCards: CardSet;
+  readonly board: CardSet;
 
   /**
-   *
+   * The HandRange(s) that the players have.
    */
   readonly players: HandRange[];
 
-  private readonly playersArray: CardSet[][];
+  protected readonly resolvedPlayers: CardSet[][];
 
+  abstract [Symbol.iterator](): Iterator<Matchup>;
+
+  /**
+   * Compares hands in best form that each one can make.
+   *
+   * @internal
+   */
+  protected showdown(holeCardPairs: CardSet[], board: CardSet): Matchup {
+    const players: Pick<Matchup["players"][0], "cards" | "hand">[] = [];
+    const wonPlayerIndexes = new Set<number>();
+    let strongestPowerIndex = Number.MAX_SAFE_INTEGER;
+
+    for (const [i, holeCardPair] of holeCardPairs.entries()) {
+      const madeHand = MadeHand.findBestFrom(holeCardPair.added(board));
+
+      if (madeHand.powerIndex <= strongestPowerIndex) {
+        if (madeHand.powerIndex < strongestPowerIndex) {
+          wonPlayerIndexes.clear();
+
+          strongestPowerIndex = madeHand.powerIndex;
+        }
+
+        wonPlayerIndexes.add(i);
+      }
+
+      players.push({
+        cards: holeCardPair,
+        hand: madeHand,
+      });
+    }
+
+    return {
+      board,
+      players: players.map((p, i) => ({ ...p, win: wonPlayerIndexes.has(i) })),
+      wonPlayerCount: wonPlayerIndexes.size,
+    };
+  }
+}
+
+/**
+ * The eventual situation of the evaluation and its result.
+ */
+export interface Matchup {
+  /**
+   * The eventual board card in the situation.
+   */
+  readonly board: CardSet;
+
+  /**
+   * Result of each player in the situation.
+   */
+  readonly players: {
+    cards: CardSet;
+    hand: MadeHand;
+    win: boolean;
+  }[];
+
+  /**
+   * Number of the players won the pot.
+   */
+  readonly wonPlayerCount: number;
+}
+
+/**
+ * An Evaluator that does montecarlo simulation for certain times.
+ *
+ * Do not forget to call `#take()` because this evaluator can run unlimited times.
+ *
+ * @example
+ * ```ts
+ * const evaluator = new MontecarloEvaluator({
+ *   board: CardSet.parse("AsKcQh2d"),
+ *   players: [
+ *     HandRange.parse("KdJd"),
+ *     HandRange.parse("Ah3h"),
+ *   ],
+ * });
+ *
+ * for (const matchup of evaluator.take(10000)) {
+ *   // ...
+ * }
+ * ```
+ */
+export class MontecarloEvaluator extends Evaluator {
+  /**
+   * Limits times to run and returns `Iterable<Matchup>`.
+   *
+   * @example
+   * ```ts
+   * const evaluator = new MontecarloEvaluator({
+   *   board: CardSet.parse("AsKcQh2d"),
+   *   players: [
+   *     HandRange.parse("KdJd"),
+   *     HandRange.parse("Ah3h"),
+   *   ],
+   * });
+   *
+   * for (const matchup of evaluator.take(10000)) {
+   *   // ...
+   * }
+   * ```
+   */
   take(times: number): Iterable<Matchup> {
     const self = this;
 
@@ -121,108 +196,138 @@ export class MontecarloEvaluator implements Evaluator {
 
   *[Symbol.iterator](): Iterator<Matchup> {
     while (true) {
-      let deck = CardSetUtils.diff(CardSetUtils.full, this.communityCards);
-      let communityCards = this.communityCards;
-      const holeCardPairs = this.playersArray.map(
+      let deck = CardSet.full().removed(this.board);
+      let board = this.board;
+      const holeCardPairs = this.resolvedPlayers.map(
         (hr) => hr[~~(Math.random() * hr.length)]!
       );
       let isPossible = true;
 
       for (const cardPair of holeCardPairs) {
-        if (!CardSetUtils.has(deck, cardPair)) {
+        if (!deck.has(cardPair)) {
           isPossible = false;
 
           break;
         }
 
-        deck = CardSetUtils.diff(deck, cardPair);
+        deck = deck.removed(cardPair);
       }
 
       if (!isPossible) continue;
 
-      for (let i = CardSetUtils.size(communityCards); i < 5; ) {
-        const card = CardUtils.random();
+      for (let i = board.size; i < 5; ) {
+        const card = pickRandomCard();
 
-        if (CardSetUtils.has(deck, card)) {
-          deck = CardSetUtils.diff(deck, card);
-          communityCards = CardSetUtils.union(communityCards, card);
+        if (deck.has(card)) {
+          deck = deck.removed(card);
+          board = board.added(card);
 
           i += 1;
         }
       }
 
-      yield showdown(holeCardPairs, communityCards);
+      yield this.showdown(holeCardPairs, board);
     }
   }
 }
 
 /**
+ * An Evaluator that exhaustively simulates all the possible situations. This is suitable for the situation that has only small number of possible futures.
  *
+ * @example
+ * ```ts
+ * const evaluator = new ExhaustiveEvaluator({
+ *   board: CardSet.parse("AsKcQh2d"),
+ *   players: [
+ *     HandRange.parse("KdJd"),
+ *     HandRange.parse("Ah3h"),
+ *   ],
+ * });
+ *
+ * for (const matchup of evaluator) {
+ *   // ...
+ * }
+ * ```
  */
-export class ExhaustiveEvaluator implements Evaluator {
-  constructor({
-    communityCards,
-    players,
-  }: {
-    communityCards: CardSet;
-    players: HandRange[];
-  }) {
-    this.communityCards = communityCards;
-    this.players = players;
-  }
-
-  readonly communityCards: CardSet;
-
-  readonly players: HandRange[];
-
+export class ExhaustiveEvaluator extends Evaluator {
   *[Symbol.iterator](): Iterator<Matchup> {
-    const players = this.players.map((hr) =>
-      HandRangeUtils.toCardSetEnumeration(hr, 12)
-    );
     const stack: {
       deck: CardSet;
       holeCardPairs: CardSet[];
-      communityCards: CardSet;
+      board: CardSet;
     }[] = [];
 
     stack.push({
-      deck: CardSetUtils.diff(CardSetUtils.full, this.communityCards),
+      deck: CardSet.full().removed(this.board),
       holeCardPairs: [],
-      communityCards: this.communityCards,
+      board: this.board,
     });
 
     while (stack.length >= 1) {
-      const { deck, holeCardPairs, communityCards } = stack.pop()!;
+      const { deck, holeCardPairs, board } = stack.pop()!;
 
-      if (holeCardPairs.length < players.length) {
+      if (holeCardPairs.length < this.resolvedPlayers.length) {
         const nextPlayerIndex = holeCardPairs.length;
 
-        for (const holeCardPair of players[nextPlayerIndex]!) {
-          if (!CardSetUtils.has(deck, holeCardPair)) continue;
+        for (const holeCardPair of this.resolvedPlayers[nextPlayerIndex]!) {
+          if (!deck.has(holeCardPair)) continue;
 
           stack.push({
-            deck: CardSetUtils.diff(deck, holeCardPair),
+            deck: deck.removed(holeCardPair),
             holeCardPairs: [...holeCardPairs, holeCardPair],
-            communityCards,
+            board,
           });
         }
 
         continue;
       }
 
-      if (CardSetUtils.size(communityCards) < 5) {
-        for (const card of CardSetUtils.iterate(deck)) {
+      if (board.size < 5) {
+        for (const card of deck) {
           stack.push({
-            deck: CardSetUtils.diff(deck, card),
+            deck: deck.removed(card),
             holeCardPairs,
-            communityCards: CardSetUtils.union(communityCards, card),
+            board: board.added(card),
           });
         }
 
         continue;
       }
 
-      yield showdown(holeCardPairs, communityCards);
+      yield this.showdown(holeCardPairs, board);
     }
   }
 }
+
+/**
+ * Returns a randomly-chosen Card.
+ *
+ * @example
+ * ```ts
+ * pickRandomCard();  // => Card (at random)
+ * ```
+ */
+function pickRandomCard(): Card {
+  return new Card(
+    ranks[Math.floor(Math.random() * ranks.length)]!,
+    suits[Math.floor(Math.random() * suits.length)]!
+  );
+}
+
+const ranks: Rank[] = [
+  Rank.Ace,
+  Rank.King,
+  Rank.Queen,
+  Rank.Jack,
+  Rank.Ten,
+  Rank.Nine,
+  Rank.Eight,
+  Rank.Seven,
+  Rank.Six,
+  Rank.Five,
+  Rank.Four,
+  Rank.Trey,
+  Rank.Deuce,
+];
+
+const suits: Suit[] = [Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club];

@@ -1,156 +1,109 @@
-import { Rank, ranksInOrder, RankUtils } from "./rank";
-import { Suit, suitsInOrder, SuitUtils } from "./suit";
+import { Rank } from "./rank";
+import { Suit } from "./suit";
 
 /**
- * An integer value that expresses a card. This value is always `2^0 <= n <= 2^51`.
- *
- * @example
- * ```
- * 0b1 as Card;      // ace of spade
- * 0b10 as Card;     // deuce of spade
- * 2 ** 51 as Card;  // king of club
- * ```
+ * A class representing a piece of playing cards.
  */
-export type Card = number & {
-  __CardBrand: never;
-};
-
-/**
- * A string expression of a card. It's always 2-character length.
- *
- * @example
- * ```
- * "As" as CardString;  // ace of spade
- * "2d" as CardString;  // deuce of diamond
- * "Qh" as CardString;  // queen of heart
- * "Tc" as CardString;  // ten of club
- * ```
- */
-export type CardString = `${Rank}${Suit}`;
-
-/**
- * A utility function set for Cards.
- */
-export const CardUtils = Object.freeze({
-  /**
-   * Creates a Card from a given pair of Rank and Suit.
-   */
-  create(rank: Rank, suit: Suit): Card {
-    return (2 **
-      (ranksInOrder.indexOf(rank) + suitsInOrder.indexOf(suit) * 13)) as Card;
-  },
-
+export class Card {
   /**
    * Parses a string into a Card.
    *
    * @example
    * ```ts
-   * CardUtils.parse("As") === CardUtils.create("A", "s");
-   * CardUtils.parse("2s") === CardUtils.create("2", "s");
-   * CardUtils.parse("Kc") === CardUtils.create("K", "c");
+   * Card.parse("As").equals(new Card(Rank.Ace, Suit.Spade));    // => true
+   * Card.parse("2s").equals(new Card(Rank.Deuce, Suit.Spade));  // => true
+   * Card.parse("Kc").equals(new Card(Rank.King, Suit.Club));    // => true
    * ```
    */
-  parse(string: string): Card {
-    if (!/^[A23456789TJQK][shdc]$/.test(string)) {
+  static parse(expression: string): Card {
+    if (!/^[A23456789TJQK][shdc]$/.test(expression)) {
       throw new TypeError(
-        `"${string}" is not a valid string for CardUtils.parse().`
+        `"${expression}" is not a valid string for Card.parse().`
       );
     }
 
-    return CardUtils.create(
-      RankUtils.parse(string[0]!),
-      SuitUtils.parse(string[1]!)
-    );
-  },
+    return new Card(Rank.parse(expression[0]!), Suit.parse(expression[1]!));
+  }
 
   /**
-   * Creates a randomly-chosen Card.
+   * Creates a Card from a given pair of Rank and Suit.
    *
    * @example
    * ```ts
-   * CardUtils.random();  => Card (at random)
+   * new Card(Rank.Ace, Suit.Spade);
    * ```
    */
-  random(): Card {
-    return (2 ** Math.floor(Math.random() * 52)) as Card;
-  },
+  constructor(rank: Rank, suit: Suit) {
+    this.rank = rank;
+    this.suit = suit;
+  }
 
   /**
-   * Extracts the Rank part of a Card.
+   * Rank of the Card.
    *
    * @example
-   * ```
-   * CardUtils.rankOf(CardUtils.parse("As")) === "A";
-   * CardUtils.rankOf(CardUtils.parse("3h")) === "3";
-   * CardUtils.rankOf(CardUtils.parse("Td")) === "T";
-   * CardUtils.rankOf(CardUtils.parse("6c")) === "6";
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).rank === Rank.Ace;    // => true
+   * new Card(Rank.Trey, Suit.Heart).rank === Rank.Trey;  // => true
+   * new Card(Rank.Ten, Suit.Diamond).rank === Rank.Ten;  // => true
+   * new Card(Rank.Six, Suit.Club).rank === Rank.Six;     // => true
    * ```
    */
-  rankOf(card: Card): Rank {
-    return ranksInOrder[Math.log2(card) % 13]!;
-  },
+  readonly rank: Rank;
 
   /**
-   * Extracts the Suit part of a Card.
+   * Suit of the Card.
    *
    * @example
-   * ```
-   * CardUtils.suitOf(CardUtils.parse("As")) === "s";
-   * CardUtils.suitOf(CardUtils.parse("3h")) === "h";
-   * CardUtils.suitOf(CardUtils.parse("Td")) === "d";
-   * CardUtils.suitOf(CardUtils.parse("6c")) === "c";
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).suit === Suit.Spade;      // => true
+   * new Card(Rank.Trey, Suit.Heart).suit === Suit.Heart;     // => true
+   * new Card(Rank.Ten, Suit.Diamond).suit === Suit.Diamond;  // => true
+   * new Card(Rank.Six, Suit.Club).suit === Suit.Club;        // => true
    * ```
    */
-  suitOf(card: Card): Suit {
-    return suitsInOrder[~~(Math.log2(card) / 13)]!;
-  },
+  readonly suit: Suit;
 
   /**
-   * Compares two cards in index order and returns integer compatible with Array#sort().
+   * Compares two cards in power order and returns integer compatible with [`Array#sort()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).
    *
    * @example
-   * ```
-   * CardUtils.compare(Card("A", "s"), Card("A", "d"));  // => negative integer
-   * CardUtils.compare(Card("A", "d"), Card("6", "h"));  // => positive integer
-   * CardUtils.compare(Card("A", "c"), Card("A", "c"));  // => 0
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).compare(new Card(Rank.Ace, Suit.Diamond));  // => negative integer
+   * new Card(Rank.Ace, Suit.Diamond).compare(new Card(Rank.Six, Suit.Heart));  // => negative integer
+   * new Card(Rank.Queen, Suit.Spade).compare(new Card(Rank.Ace, Suit.Heart));  // => positive integer
+   * new Card(Rank.Ace, Suit.Club).compare(new Card(Rank.Ace, Suit.Club));      // => 0
    * ```
    */
-  compare(a: Card, b: Card): number {
-    return (
-      SuitUtils.compare(CardUtils.suitOf(a), CardUtils.suitOf(b)) * 13 +
-      RankUtils.compare(CardUtils.rankOf(a), CardUtils.rankOf(b))
-    );
-  },
+  compare(other: Card): number {
+    return this.rank.compare(other.rank) * 4 + this.suit.compare(other.suit);
+  }
 
   /**
-   * Compares two ranks in power order and returns integer compatible with Array#sort().
+   * Whether the given card has the same rank and suit or not.
    *
    * @example
-   * ```
-   * CardUtils.comparePower(Card("A", "s"), Card("A", "d"));  // => negative integer
-   * CardUtils.comparePower(Card("A", "d"), Card("6", "h"));  // => negative integer
-   * CardUtils.comparePower(Card("Q", "s"), Card("A", "h"));  // => positive integer
-   * CardUtils.comparePower(Card("A", "c"), Card("A", "c"));  // => 0
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).equals(new Card(Rank.Ace, Suit.Spade));    // => true
+   * new Card(Rank.Ace, Suit.Spade).equals(new Card(Rank.Ace, Suit.Diamond));  // => false
+   * new Card(Rank.Ace, Suit.Spade).equals(new Card(Rank.Deuce, Suit.Spade));  // => false
    * ```
    */
-  comparePower(a: Card, b: Card): number {
-    return (
-      RankUtils.comparePower(CardUtils.rankOf(a), CardUtils.rankOf(b)) * 4 +
-      SuitUtils.compare(CardUtils.suitOf(a), CardUtils.suitOf(b))
-    );
-  },
+  equals(other: Card): boolean {
+    return this.rank === other.rank && this.suit === other.suit;
+  }
 
   /**
    * Stringifies a Card.
    *
    * @example
-   * ```
-   * CardUtils.format(CardUtils.create("A", "s")) === ("As" as CardString);
-   * CardUtils.format(CardUtils.create("2", "s")) === ("2s" as CardString);
-   * CardUtils.format(CardUtils.create("K", "c")) === ("Kc" as CardString);
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).format() === "As";    // => true
+   * new Card(Rank.Deuce, Suit.Spade).format() === "2s";  // => true
+   * new Card(Rank.King, Suit.Club).format() === "Kc";    // => true
    * ```
    */
-  format(card: Card): CardString {
-    return `${CardUtils.rankOf(card)}${CardUtils.suitOf(card)}`;
-  },
-});
+  format(): string {
+    return `${this.rank.format()}${this.suit.format()}`;
+  }
+}
