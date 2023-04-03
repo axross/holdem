@@ -2,7 +2,7 @@
 
 A fast implementation of Texas Hold'em poker odds calculator and its related data models.
 
-[![npm version](https://badge.fury.io/js/bemmer.svg)](http://badge.fury.io/js/bemmer)
+[![npm version](https://badge.fury.io/js/holdem.svg)](http://badge.fury.io/js/holdem)
 [![license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE)
 
 <img src="banner.png" alt="holdem" width="640">
