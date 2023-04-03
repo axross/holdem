@@ -270,7 +270,7 @@ export class CardSet implements Iterable<Card> {
 
 function intToCard(index: number): Card {
   let rank!: Rank;
-  switch (Math.log2(index) % 13) {
+  switch (~~(Math.log2(index) / 4)) {
     case 0:
       rank = Rank.Ace;
       break;
@@ -313,7 +313,7 @@ function intToCard(index: number): Card {
   }
 
   let suit!: Suit;
-  switch (~~(Math.log2(index) / 13)) {
+  switch (Math.log2(index) % 4) {
     case 0:
       suit = Suit.Spade;
       break;
@@ -391,5 +391,5 @@ function cardToInt(card: Card) {
       break;
   }
 
-  return 2 ** (rankInt + suitInt * 13);
+  return 2 ** (rankInt * 4 + suitInt);
 }

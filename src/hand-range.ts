@@ -278,19 +278,6 @@ export class HandRange implements Iterable<readonly [CardSet, number]> {
   }
 
   private constructor(map: Map<number, number>) {
-    // const sorted = Array.from(map.entries());
-
-    // sorted.sort(([aInt], [bInt]) => {
-    //   const a = new CardSet(aInt);
-    //   const b = new CardSet(bInt);
-    //   const isAPocket = a.at(0)?.rank === a.at(1)?.rank;
-    //   const isBPocket = b.at(0)?.rank === b.at(1)?.rank;
-
-    //   if (isAPocket && isBPocket) {
-
-    //   }
-    // })
-
     this.map = new Map(map);
   }
 

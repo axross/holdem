@@ -43,9 +43,9 @@ describe("CardSet.parse()", () => {
     expect(CardSet.parse("AsKcQhJd")).toEqual(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ])
     );
   });
@@ -90,9 +90,9 @@ describe("CardSet#size", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).size
     ).toBe(4);
   });
@@ -107,16 +107,16 @@ describe("CardSet#size", () => {
 });
 
 describe("CardSet#at()", () => {
-  test("CardSet<AsQhJdKc>.at(2) is Card<Jd>", () => {
+  test("CardSet<AsQhJdKc>.at(2) is Card<Qh>", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ])
         .at(2)
-        ?.equals(new Card(Rank.Jack, Suit.Diamond))
+        ?.equals(new Card(Rank.Queen, Suit.Heart))
     ).toBe(true);
   });
 
@@ -124,9 +124,9 @@ describe("CardSet#at()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).at(4)
     ).toBe(null);
   });
@@ -137,9 +137,9 @@ describe("CardSet#has()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).has(new Card(Rank.Queen, Suit.Heart))
     ).toBe(true);
   });
@@ -148,9 +148,9 @@ describe("CardSet#has()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).has(new Card(Rank.Ace, Suit.Heart))
     ).toBe(false);
   });
@@ -159,9 +159,9 @@ describe("CardSet#has()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).has(CardSet.from([new Card(Rank.Queen, Suit.Heart)]))
     ).toBe(true);
   });
@@ -170,9 +170,9 @@ describe("CardSet#has()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).has(CardSet.from([new Card(Rank.Ace, Suit.Heart)]))
     ).toBe(false);
   });
@@ -181,9 +181,9 @@ describe("CardSet#has()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).has(CardSet.empty())
     ).toBe(true);
   });
@@ -215,9 +215,9 @@ describe("CardSet#added()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).added(
         CardSet.from([
           new Card(Rank.Ace, Suit.Heart),
@@ -244,16 +244,16 @@ describe("CardSet#added()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).added(new Card(Rank.Deuce, Suit.Club))
     ).toEqual(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
         new Card(Rank.Deuce, Suit.Club),
       ])
     );
@@ -263,9 +263,9 @@ describe("CardSet#added()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).added(CardSet.full())
     ).toEqual(CardSet.full());
   });
@@ -274,16 +274,16 @@ describe("CardSet#added()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).added(CardSet.empty())
     ).toEqual(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ])
     );
   });
@@ -302,9 +302,9 @@ describe("CardSet#removed()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).removed(
         CardSet.from([
           new Card(Rank.King, Suit.Club),
@@ -323,9 +323,9 @@ describe("CardSet#removed()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).removed(new Card(Rank.King, Suit.Club))
     ).toEqual(
       CardSet.from([
@@ -340,9 +340,9 @@ describe("CardSet#removed()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).removed(
         CardSet.from([
           new Card(Rank.King, Suit.Diamond),
@@ -352,9 +352,9 @@ describe("CardSet#removed()", () => {
     ).toEqual(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ])
     );
   });
@@ -363,9 +363,9 @@ describe("CardSet#removed()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).removed(CardSet.full())
     ).toEqual(CardSet.empty());
   });
@@ -374,16 +374,16 @@ describe("CardSet#removed()", () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).removed(CardSet.empty())
     ).toEqual(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ])
     );
   });
@@ -398,13 +398,13 @@ describe("CardSet#removed()", () => {
 });
 
 describe("CardSet#format()", () => {
-  test('CardSet<AsQhJdKc>.format() returns "AsQhJdKc"', () => {
+  test('CardSet<AsQhJdKc>.format() returns "AsKcQhJd"', () => {
     expect(
       CardSet.from([
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
+        new Card(Rank.King, Suit.Club),
       ]).format()
     ).toBe("AsKcQhJd");
   });
@@ -429,8 +429,8 @@ test("CardSet is iterable and iterates on each card", () => {
 
   expect(cards).toEqual([
     new Card(Rank.Ace, Suit.Spade),
+    new Card(Rank.King, Suit.Club),
     new Card(Rank.Queen, Suit.Heart),
     new Card(Rank.Jack, Suit.Diamond),
-    new Card(Rank.King, Suit.Club),
   ]);
 });
