@@ -2,6 +2,9 @@ import { Card } from "./card";
 import { Rank } from "./rank";
 import { Suit } from "./suit";
 
+/**
+ * Immutable and performant set of Card(s).
+ */
 export class CardSet implements Iterable<Card> {
   /**
    * An empty CardSet.
@@ -55,15 +58,17 @@ export class CardSet implements Iterable<Card> {
    * CardSetUtils.parse("") === CardSetUtils.empty;  // => true
    * ```
    */
-  static parse(string: string): CardSet {
+  static parse(expression: string): CardSet {
     let cards = CardSet.empty();
 
-    for (let i = 0; i < string.length; i += 2) {
+    for (let i = 0; i < expression.length; i += 2) {
       try {
-        cards = cards.added(Card.parse(string.substring(i, i + 2)));
+        cards = cards.added(Card.parse(expression.substring(i, i + 2)));
       } catch (error) {
         throw new Error(
-          `\"${string}\".substring(${i}, ${i + 2}) is not a valid CardString.`
+          `\"${expression}\".substring(${i}, ${
+            i + 2
+          }) is not a valid CardString.`
         );
       }
     }
@@ -111,7 +116,7 @@ export class CardSet implements Iterable<Card> {
   }
 
   /**
-   * Returns whether a CardSet contains every card in another CardSet.
+   * Returns whether a CardSet contains a Card or all the Card in another CardSet.
    *
    * @example
    * ```ts
@@ -174,7 +179,7 @@ export class CardSet implements Iterable<Card> {
   }
 
   /**
-   * Returns an union of two CardSets.
+   * Returns an union of CardSet(s).
    *
    * @example
    * ```ts
@@ -204,7 +209,7 @@ export class CardSet implements Iterable<Card> {
   }
 
   /**
-   * Returns a difference (=relative complement) of two CardSets.
+   * Returns a difference (=relative complement) of CardSet(s).
    *
    * @example
    * ```ts
@@ -235,7 +240,7 @@ export class CardSet implements Iterable<Card> {
   }
 
   /**
-   * Stringify a CardSet.
+   * Stringifies a CardSet.
    *
    * @example
    * ```ts

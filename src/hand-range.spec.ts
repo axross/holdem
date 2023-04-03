@@ -133,9 +133,9 @@ describe("HandRange.parse()", () => {
   });
 });
 
-describe("HandRange#size()", () => {
-  test("HandRange<AA-22>.size() returns 78", () => {
-    expect(HandRange.parse("AA-22").size()).toBe(78);
+describe("HandRange#size", () => {
+  test("HandRange<AA-22>.size returns 78", () => {
+    expect(HandRange.parse("AA-22").size).toBe(78);
   });
 });
 

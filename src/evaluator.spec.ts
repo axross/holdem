@@ -17,7 +17,7 @@ describe("MontecarloEvaluator", () => {
 
     for (const matchup of evaluator.take(100000)) {
       for (const [i, player] of matchup.players.entries()) {
-        if (player.won) {
+        if (player.win) {
           playerWinCounts[i] += 1 / matchup.wonPlayerCount;
         }
       }
@@ -46,7 +46,7 @@ describe("MontecarloEvaluator", () => {
 
     for (const matchup of evaluator.take(100000)) {
       for (const [i, player] of matchup.players.entries()) {
-        if (player.won) {
+        if (player.win) {
           playerWinCounts[i] += 1 / matchup.wonPlayerCount;
         }
       }
@@ -74,7 +74,7 @@ describe("ExhaustiveEvaluator", () => {
 
     for (const matchup of evaluator) {
       for (const [i, player] of matchup.players.entries()) {
-        if (player.won) {
+        if (player.win) {
           playerWinCounts[i] += 1 / matchup.wonPlayerCount;
         }
       }
@@ -103,7 +103,7 @@ describe("ExhaustiveEvaluator", () => {
 
     for (const matchup of evaluator) {
       for (const [i, player] of matchup.players.entries()) {
-        if (player.won) {
+        if (player.win) {
           playerWinCounts[i] += 1 / matchup.wonPlayerCount;
         }
       }

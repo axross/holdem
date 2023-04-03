@@ -1,15 +1,10 @@
 import { Rank } from "./rank";
 import { Suit } from "./suit";
 
+/**
+ * A class representing a piece of playing cards.
+ */
 export class Card {
-  /**
-   * Creates a Card from a given pair of Rank and Suit.
-   */
-  constructor(rank: Rank, suit: Suit) {
-    this.rank = rank;
-    this.suit = suit;
-  }
-
   /**
    * Parses a string into a Card.
    *
@@ -20,21 +15,34 @@ export class Card {
    * Card.parse("Kc").equals(new Card(Rank.King, Suit.Club));    // => true
    * ```
    */
-  static parse(string: string): Card {
-    if (!/^[A23456789TJQK][shdc]$/.test(string)) {
+  static parse(expression: string): Card {
+    if (!/^[A23456789TJQK][shdc]$/.test(expression)) {
       throw new TypeError(
-        `"${string}" is not a valid string for Card.parse().`
+        `"${expression}" is not a valid string for Card.parse().`
       );
     }
 
-    return new Card(Rank.parse(string[0]!), Suit.parse(string[1]!));
+    return new Card(Rank.parse(expression[0]!), Suit.parse(expression[1]!));
   }
 
   /**
-   * Extracts the Rank part of a Card.
+   * Creates a Card from a given pair of Rank and Suit.
    *
    * @example
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade);
    * ```
+   */
+  constructor(rank: Rank, suit: Suit) {
+    this.rank = rank;
+    this.suit = suit;
+  }
+
+  /**
+   * Rank of the Card.
+   *
+   * @example
+   * ```ts
    * new Card(Rank.Ace, Suit.Spade).rank === Rank.Ace;    // => true
    * new Card(Rank.Trey, Suit.Heart).rank === Rank.Trey;  // => true
    * new Card(Rank.Ten, Suit.Diamond).rank === Rank.Ten;  // => true
@@ -44,10 +52,10 @@ export class Card {
   readonly rank: Rank;
 
   /**
-   * Extracts the Suit part of a Card.
+   * Suit of the Card.
    *
    * @example
-   * ```
+   * ```ts
    * new Card(Rank.Ace, Suit.Spade).suit === Suit.Spade;      // => true
    * new Card(Rank.Trey, Suit.Heart).suit === Suit.Heart;     // => true
    * new Card(Rank.Ten, Suit.Diamond).suit === Suit.Diamond;  // => true
@@ -57,21 +65,31 @@ export class Card {
   readonly suit: Suit;
 
   /**
-   * Compares two cards in power order and returns integer compatible with Array#sort().
+   * Compares two cards in power order and returns integer compatible with [`Array#sort()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).
    *
    * @example
-   * ```
-   * CardUtils.compare(new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Diamond));  // => negative integer
-   * CardUtils.compare(new Card(Rank.Ace, Suit.Diamond), new Card(Rank.Six, Suit.Heart));  // => negative integer
-   * CardUtils.compare(new Card(Rank.Queen, Suit.Spade), new Card(Rank.Ace, Suit.Heart));  // => positive integer
-   * CardUtils.compare(new Card(Rank.Ace, Suit.Club), new Card(Rank.Ace, Suit.Club));      // => 0
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).compare(new Card(Rank.Ace, Suit.Diamond));  // => negative integer
+   * new Card(Rank.Ace, Suit.Diamond).compare(new Card(Rank.Six, Suit.Heart));  // => negative integer
+   * new Card(Rank.Queen, Suit.Spade).compare(new Card(Rank.Ace, Suit.Heart));  // => positive integer
+   * new Card(Rank.Ace, Suit.Club).compare(new Card(Rank.Ace, Suit.Club));      // => 0
    * ```
    */
   compare(other: Card): number {
     return this.rank.compare(other.rank) * 4 + this.suit.compare(other.suit);
   }
 
-  equals(other: Card) {
+  /**
+   * Whether the given card has the same rank and suit or not.
+   *
+   * @example
+   * ```ts
+   * new Card(Rank.Ace, Suit.Spade).equals(new Card(Rank.Ace, Suit.Spade));    // => true
+   * new Card(Rank.Ace, Suit.Spade).equals(new Card(Rank.Ace, Suit.Diamond));  // => false
+   * new Card(Rank.Ace, Suit.Spade).equals(new Card(Rank.Deuce, Suit.Spade));  // => false
+   * ```
+   */
+  equals(other: Card): boolean {
     return this.rank === other.rank && this.suit === other.suit;
   }
 
@@ -79,7 +97,7 @@ export class Card {
    * Stringifies a Card.
    *
    * @example
-   * ```
+   * ```ts
    * new Card(Rank.Ace, Suit.Spade).format() === "As";    // => true
    * new Card(Rank.Deuce, Suit.Spade).format() === "2s";  // => true
    * new Card(Rank.King, Suit.Club).format() === "Kc";    // => true

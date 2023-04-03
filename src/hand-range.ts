@@ -51,14 +51,14 @@ export class HandRange implements Iterable<readonly [CardSet, number]> {
    * const handRange = HandRange.parse("88-66:0.66,JJ+:0.5,44,AQs-A9s:0.2");
    * ```
    */
-  static parse(value: string): HandRange {
+  static parse(expression: string): HandRange {
     const map = new Map<CardSet, number>();
 
-    if (value.replaceAll(/\s/g, "").length === 0) {
+    if (expression.replaceAll(/\s/g, "").length === 0) {
       return HandRange.from(map);
     }
 
-    const parts = value.replaceAll(/\s/g, "").split(",");
+    const parts = expression.replaceAll(/\s/g, "").split(",");
 
     for (const part of parts) {
       if (
@@ -286,7 +286,7 @@ export class HandRange implements Iterable<readonly [CardSet, number]> {
   private memoizedRankPairs: Map<string, number> | null = null;
 
   /**
-   * Returns number of entries in the HandRange.
+   * Number of entries in the HandRange.
    *
    * @example
    * ```ts
@@ -295,7 +295,7 @@ export class HandRange implements Iterable<readonly [CardSet, number]> {
    * handRange.size;  // => 18
    * ```
    */
-  size(): number {
+  get size(): number {
     return this.map.size;
   }
 

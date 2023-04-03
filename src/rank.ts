@@ -1,3 +1,12 @@
+/**
+ * A enum-like representation of rank in playing cards.
+ *
+ * @example
+ * ```ts
+ * Rank.Ace;    // => A of playing cards
+ * Rank.Deuce;  // => 2 of playing cards
+ * ```
+ */
 export class Rank {
   static Ace = new Rank(0);
 
@@ -30,24 +39,24 @@ export class Rank {
    *
    * @example
    * ```ts
-   * RankUtils.parse("A") === Rank.Ace;
-   * RankUtils.parse("T") === Rank.Ten;
-   * RankUtils.parse("5") === Rank.Five;
+   * Rank.parse("A") === Rank.Ace;
+   * Rank.parse("T") === Rank.Ten;
+   * Rank.parse("5") === Rank.Five;
    * ```
    *
    * Only `"A"`, `"K"`, `"Q"`, `"J"`, `"T"`, `"9"`, `"8"`, `"7"`, `"6"`, `"5"`, `"4"`, `"3"` or `"2"` is acceptable.
    *
    * @example
    * ```ts
-   * RankUtils.parse("a");  // => Error: "a" is not a valid string value for RankUtils.parse().
+   * Rank.parse("a");  // => Error: "a" is not a valid string value for Rank.parse().
    * ```
    *
    * For consistency reason, it needs to be a string even for number-based ranks (e.g. `"4"`).
    *
    * @example
    * ```ts
-   * RankUtils.parse("4") === Rank.Four;
-   * RankUtils.parse(4);  // Error: 4 is not a valid string value for RankUtils.parse().
+   * Rank.parse("4") === Rank.Four;
+   * Rank.parse(4);  // Error: 4 is not a valid string value for Rank.parse().
    * ```
    */
   static parse(char: string): Rank {
@@ -100,7 +109,7 @@ export class Rank {
   }
 
   /**
-   * Compares two ranks in power order and returns integer compatible with Array#sort().
+   * Compares two ranks in power order and returns integer compatible with [`Array#sort()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).
    *
    * @example
    * ```
@@ -114,6 +123,16 @@ export class Rank {
     return this.powerIndex - other.powerIndex;
   }
 
+  /**
+   * Returns a char for the Rank. The returning string is compatible for `Rank.parse()`.
+   *
+   * @example
+   * ```ts
+   * Rank.Ace.format() === "A";
+   * Rank.Ten.format() === "T";
+   * Rank.Five.format() === "5";
+   * ```
+   */
   format(): string {
     switch (this) {
       case Rank.Deuce:

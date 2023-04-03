@@ -14,6 +14,9 @@ export type MadeHandType =
   | "quads"
   | "straight-flush";
 
+/**
+ * The final hand that player made at showdown.
+ */
 export class MadeHand {
   /**
    * Returns the MadeHand with the highest power index.
@@ -32,8 +35,14 @@ export class MadeHand {
     this.powerIndex = powerIndex;
   }
 
+  /**
+   * The power index of the MadeHand. `0` is the strongest (the top straight flush), `7462` is the worst trash hand.
+   */
   readonly powerIndex: number;
 
+  /**
+   * The type of MadeHand.
+   */
   get type(): MadeHandType {
     if (this.powerIndex > 6185) return "highcard";
     if (this.powerIndex > 3325) return "pair";

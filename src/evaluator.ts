@@ -12,6 +12,23 @@ import { Suit } from "./suit";
  *
  * - `new MontecarloEvaluator()` - randomly decides the possible situations can come and evaluate equities.
  * - `new ExhaustiveEvaluator()` - exhaustively iterates all the possible situations and evaluate equities.
+ *
+ * Evaluator implements `Iterable<Matchup>` so you can use it in for-loop.
+ *
+ * @example
+ * ```ts
+ * const evaluator = new ExhaustiveEvaluator({
+ *   board: CardSet.parse("AsKcQh2d"),
+ *   players: [
+ *     HandRange.parse("KdJd"),
+ *     HandRange.parse("Ah3h"),
+ *   ],
+ * });
+ *
+ * for (const matchup of evaluator) {
+ *   // ...
+ * }
+ * ```
  */
 export abstract class Evaluator implements Iterable<Matchup> {
   constructor({
@@ -19,14 +36,8 @@ export abstract class Evaluator implements Iterable<Matchup> {
     players,
     probabilityResolution = 12,
   }: {
-    /**
-     * The initial board cards for the situation.
-     */
-    board: CardSet;
-    /**
-     * The HandRange(s) that the players have.
-     */
-    players: HandRange[];
+    board: Evaluator["board"];
+    players: Evaluator["players"];
     /**
      * The resolution of probability. Default is `12`.
      */
@@ -96,7 +107,7 @@ export abstract class Evaluator implements Iterable<Matchup> {
 
     return {
       board,
-      players: players.map((p, i) => ({ ...p, won: wonPlayerIndexes.has(i) })),
+      players: players.map((p, i) => ({ ...p, win: wonPlayerIndexes.has(i) })),
       wonPlayerCount: wonPlayerIndexes.size,
     };
   }
@@ -107,7 +118,7 @@ export abstract class Evaluator implements Iterable<Matchup> {
  */
 export interface Matchup {
   /**
-   * The board card in the situation.
+   * The eventual board card in the situation.
    */
   readonly board: CardSet;
 
@@ -117,7 +128,7 @@ export interface Matchup {
   readonly players: {
     cards: CardSet;
     hand: MadeHand;
-    won: boolean;
+    win: boolean;
   }[];
 
   /**
@@ -127,13 +138,44 @@ export interface Matchup {
 }
 
 /**
+ * An Evaluator that does montecarlo simulation for certain times.
  *
+ * Do not forget to call `#take()` because this evaluator can run unlimited times.
+ *
+ * @example
+ * ```ts
+ * const evaluator = new MontecarloEvaluator({
+ *   board: CardSet.parse("AsKcQh2d"),
+ *   players: [
+ *     HandRange.parse("KdJd"),
+ *     HandRange.parse("Ah3h"),
+ *   ],
+ * });
+ *
+ * for (const matchup of evaluator.take(10000)) {
+ *   // ...
+ * }
+ * ```
  */
 export class MontecarloEvaluator extends Evaluator {
-  // constructor(params: ConstructorParameters<Evaluator>[0]) {
-  //   super(params);
-  // }
-
+  /**
+   * Limits times to run and returns `Iterable<Matchup>`.
+   *
+   * @example
+   * ```ts
+   * const evaluator = new MontecarloEvaluator({
+   *   board: CardSet.parse("AsKcQh2d"),
+   *   players: [
+   *     HandRange.parse("KdJd"),
+   *     HandRange.parse("Ah3h"),
+   *   ],
+   * });
+   *
+   * for (const matchup of evaluator.take(10000)) {
+   *   // ...
+   * }
+   * ```
+   */
   take(times: number): Iterable<Matchup> {
     const self = this;
 
@@ -190,7 +232,22 @@ export class MontecarloEvaluator extends Evaluator {
 }
 
 /**
+ * An Evaluator that exhaustively simulates all the possible situations. This is suitable for the situation that has only small number of possible futures.
  *
+ * @example
+ * ```ts
+ * const evaluator = new ExhaustiveEvaluator({
+ *   board: CardSet.parse("AsKcQh2d"),
+ *   players: [
+ *     HandRange.parse("KdJd"),
+ *     HandRange.parse("Ah3h"),
+ *   ],
+ * });
+ *
+ * for (const matchup of evaluator) {
+ *   // ...
+ * }
+ * ```
  */
 export class ExhaustiveEvaluator extends Evaluator {
   *[Symbol.iterator](): Iterator<Matchup> {

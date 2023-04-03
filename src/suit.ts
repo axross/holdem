@@ -1,3 +1,12 @@
+/**
+ * A enum-like representation of suit in playing cards.
+ *
+ * @example
+ * ```ts
+ * Suit.Spade;    // => spade of playing cards
+ * Suit.Diamond;  // => diamond of playing cards
+ * ```
+ */
 export class Suit {
   static Spade = new Suit(0);
 
@@ -12,17 +21,17 @@ export class Suit {
    *
    * @example
    * ```ts
-   * SuitUtils.parse("s") === "s";
-   * SuitUtils.parse("h") === "h";
-   * SuitUtils.parse("d") === "d";
-   * SuitUtils.parse("c") === "c";
+   * Suit.parse("s") === "s";
+   * Suit.parse("h") === "h";
+   * Suit.parse("d") === "d";
+   * Suit.parse("c") === "c";
    * ```
    *
    * Only `"s"`, `"h"`, `"d"`, or `"c"` is acceptable.
    *
    * @example
    * ```ts
-   * SuitUtils.parse("S");  // => Error: "S" is not a valid string value for SuitUtils.parse().
+   * Suit.parse("S");  // => Error: "S" is not a valid string value for Suit.parse().
    * ```
    */
   static parse(char: string): Suit {
@@ -49,7 +58,7 @@ export class Suit {
   private readonly index: number;
 
   /**
-   * Compares two ranks in index order and returns integer compatible with Array#sort().
+   * Compares two ranks in index order and returns integer compatible with [`Array#sort()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).
    *
    * It results in the ordinal order that how it should usually be in poker.
    *
@@ -64,6 +73,15 @@ export class Suit {
     return this.index - other.index;
   }
 
+  /**
+   * Returns a char for the Suit. The returning string is compatible for `Suit.parse()`.
+   *
+   * @example
+   * ```ts
+   * Suit.Spade.format() === "s";
+   * Suit.Diamond.format() === "d";
+   * ```
+   */
   format(): string {
     switch (this) {
       case Suit.Heart:
