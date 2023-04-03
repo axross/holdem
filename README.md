@@ -8,13 +8,62 @@ A fast implementation of Texas Hold'em poker odds calculator and its related dat
 <img src="banner.png" alt="holdem" width="640">
 
 - 🏃‍♀️ Blazing fast odds evaluation
-- ⚙️ Customizable and providing useful helpers
-- 💯 Written in 100% pure universal JavaScript - run on both Node and browsers
+- ⚙️ Modern TypeScript interface and providing useful helpers
+- 💯 Written in 100% pure universal TypeScript - run on both Node and browsers
 - ✅ Fully tested
 
 ## API
 
-table comes here
+- [`Rank`](#rank)
+  - [`Rank.parse(char)`](#rankparsechar-string-rank)
+  - [`Rank#compare(other)`](#rankcompareother-rank-number)
+  - [`Rank#format()`](#rankformat-string)
+- [`Suit`](#suit)
+  - [`Suit.parse(char)`](#suitparsechar-string-suit)
+  - [`Suit#compare(other)`](#suitcompareother-suit-number)
+  - [`Suit#format()`](#suitformat-string)
+- [`Card`](#card)
+  - [`Card.parse(expression)`](#cardparseexpression-string-card)
+  - [`new Card(rank, suit)`](#new-cardrank-rank-suit-suit-card)
+  - [`Card#rank`](#cardrank-rank)
+  - [`Card#suit`](#cardsuit-suit)
+  - [`Card#compare(other)`](#cardcompareother-card-number)
+  - [`Card#equals(other)`](#cardequalsother-card-boolean)
+  - [`Card#format()`](#cardformat-string)
+- [`CardSet`](#cardset)
+  - [`CardSet.empty()`](#cardsetempty-cardset)
+  - [`CardSet.full()`](#cardsetfull-cardset)
+  - [`CardSet.from(cards)`](#cardsetfromcards-iterablecard-cardset)
+  - [`CardSet.parse(expression)`](#cardsetparseexpression-string-cardset)
+  - [`CardSet#size`](#cardsetsize-number)
+  - [`CardSet#has(other)`](#cardsethasother-card--cardset-boolean)
+  - [`CardSet#at(index)`](#cardsetatindex-number-card--null)
+  - [`CardSet#added(other)`](#cardsetaddedother-card--cardset-cardset)
+  - [`CardSet#removed(other)`](#cardsetremovedother-card--cardset-cardset)
+  - [`CardSet#format()`](#cardsetformat-string)
+- [`HandRange`](#handrange)
+  - [`HandRange.empty()`](#handrangeempty-handrange)
+  - [`HandRange.parse(expression)`](#handrangeparseexpression-string-handrange)
+  - [`HandRange.from(cardSets)`](#handrangefromcardsets-iterablecardsets-handrange)
+  - [`HandRange#size`](#handrangesize-number)
+  - [`HandRange#get(cardSet)`](#handrangegetcardset-cardset-number--null)
+  - [`HandRange#added(other)`](#handrangeaddedother-handrange-handrange)
+  - [`HandRange#removed(other)`](#handrangeremovedother-handrange-handrange)
+  - [`HandRange#onlyRankPairs()`](#handrangeonlyrankpairs-mapstring-number)
+  - [`HandRange#format()`](#handrangeformat-string)
+- [`Evaluator`](#evaluator)
+  - [`Evaluator#board`](#evaluatorboard-cardset)
+  - [`Evaluator#players`](#evaluatorplayers-handrange)
+- [`MontecarloEvaluator`](#montecarloevaluator)
+  - [`MontecarloEvaluator#takes(times)`](#montecarloevaluatortaketimes-number-iterablematchup-handrange)
+- [`ExhaustiveEvaluator`](#exhaustiveevaluator)
+- [`Matchup`](#matchup)
+  - [`Matchup#board`](#matchupboard-cardset)
+  - [`Matchup#players`](#matchupplayers--cards-cardset-hand-madehand-win-boolean-)
+  - [`Matchup#wonPlayerCount`](#matchupwonplayercount-number)
+- [`MadeHand`](#madehand)
+  - [`MadeHand#powerIndex`](#madehandpowerindex-number)
+  - [`MadeHand#type`](#madehandtype-highcard--pair--two-pairs--trips--straight--flush--full-house--quads--straight-flush)
 
 ### Rank
 
@@ -217,7 +266,7 @@ const cardSet = CardSet.from([
 ]);
 ```
 
-#### `CardSet.parse(value: string): CardSet`
+#### `CardSet.parse(expression: string): CardSet`
 
 Parses a string into CardSet.
 
@@ -368,7 +417,7 @@ Returns an empty HandRange.
 const handRange = HandRange.empty();
 ```
 
-#### `HandRange.parse(): HandRange`
+#### `HandRange.parse(expression: string): HandRange`
 
 Parses a string and returns a HandRange.
 
@@ -392,7 +441,7 @@ The probability can be omitted. `AsKs` works as same as `AsKs:1`.
 const handRange = HandRange.parse("88-66:0.66,JJ+:0.5,44,AQs-A9s:0.2");
 ```
 
-#### `HandRange.from(): HandRange`
+#### `HandRange.from(cardSets: Iterable<CardSet>): HandRange`
 
 Returns a HandRange that contains all the given entries of CardSet and its existance probability.
 
