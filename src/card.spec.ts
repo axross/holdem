@@ -22,75 +22,51 @@ describe("Card.parse()", () => {
 
   it('throws an error because "AS" is invalid string', () => {
     expect(() => Card.parse("AS")).toThrowErrorMatchingInlineSnapshot(
-      `""AS" is not a valid string for CardUtils.parse()."`
+      `""AS" is not a valid string for Card.parse()."`
     );
   });
 
   it('throws an error because "as" is invalid string', () => {
     expect(() => Card.parse("as")).toThrowErrorMatchingInlineSnapshot(
-      `""as" is not a valid string for CardUtils.parse()."`
+      `""as" is not a valid string for Card.parse()."`
     );
   });
 
   it('throws an error because "sA" is invalid string', () => {
     expect(() => Card.parse("sA")).toThrowErrorMatchingInlineSnapshot(
-      `""sA" is not a valid string for CardUtils.parse()."`
+      `""sA" is not a valid string for Card.parse()."`
     );
   });
 
   it('throws an error because "Ak" is invalid string', () => {
     expect(() => Card.parse("Ak")).toThrowErrorMatchingInlineSnapshot(
-      `""Ak" is not a valid string for CardUtils.parse()."`
+      `""Ak" is not a valid string for Card.parse()."`
     );
   });
 
   it('throws an error because "" is invalid string', () => {
     expect(() => Card.parse("")).toThrowErrorMatchingInlineSnapshot(
-      `""" is not a valid string for CardUtils.parse()."`
+      `""" is not a valid string for Card.parse()."`
     );
   });
 });
 
 describe("Card#compare()", () => {
-  test("Card<As>.compare(Card<Ad>) returns negative integer", () => {
+  test("Card<As>.compare(Card<6h>) returns negative integer", () => {
     expect(
-      new Card(Rank.Ace, Suit.Spade).compare(new Card(Rank.Ace, Suit.Diamond))
+      new Card(Rank.Ace, Suit.Spade).compare(new Card(Rank.Ace, Suit.Heart))
     ).toBeLessThan(0);
   });
 
-  test("Card<Ad>.compare(Card<6s>) returns positive integer", () => {
+  test("Card<Qs>.compare(Card<Ah>) returns positive integer", () => {
     expect(
-      new Card(Rank.Ace, Suit.Diamond).compare(new Card(Rank.Six, Suit.Spade))
+      new Card(Rank.Queen, Suit.Spade).compare(new Card(Rank.Ace, Suit.Heart))
     ).toBeGreaterThan(0);
   });
 
   test("Card<Ac>.compare(Card<Ac>) returns 0", () => {
     expect(
       new Card(Rank.Ace, Suit.Club).compare(new Card(Rank.Ace, Suit.Club))
-    ).toBe(0);
-  });
-});
-
-describe("Card#comparePower()", () => {
-  test("Card<As>.comparePower(Card<6h>) returns negative integer", () => {
-    expect(
-      new Card(Rank.Ace, Suit.Spade).comparePower(
-        new Card(Rank.Ace, Suit.Heart)
-      )
-    ).toBeLessThan(0);
-  });
-
-  test("Card<Qs>.comparePower(Card<Ah>) returns positive integer", () => {
-    expect(
-      new Card(Rank.Queen, Suit.Spade).comparePower(
-        new Card(Rank.Ace, Suit.Heart)
-      )
-    ).toBeGreaterThan(0);
-  });
-
-  test("Card<Ac>.comparePower(Card<Ac>) returns 0", () => {
-    expect(
-      new Card(Rank.Ace, Suit.Club).comparePower(new Card(Rank.Ace, Suit.Club))
     ).toBe(0);
   });
 });

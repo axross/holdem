@@ -68,33 +68,19 @@ describe("Rank.parse()", () => {
 });
 
 describe("Rank#compare()", () => {
-  test("Rank.Ace.compare(Rank.Deuce) returns negative integer", () => {
-    expect(Rank.Ace.compare(Rank.Deuce)).toBeLessThan(0);
+  test("Rank.Ace.compare(Rank.King) returns negative integer", () => {
+    expect(Rank.Ace.compare(Rank.King)).toBeLessThan(0);
   });
 
-  test("Rank.Four.compare(Rank.Ace) returns positive integer", () => {
-    expect(Rank.Four.compare(Rank.Ace)).toBeGreaterThan(0);
+  test("Rank.Five.compare(Rank.Eight) returns positive integer", () => {
+    expect(Rank.Five.compare(Rank.Eight)).toBeGreaterThan(0);
   });
 
-  test("Rank.Six.compare(Rank.Six) returns 0", () => {
-    expect(Rank.Six.compare(Rank.Six)).toBe(0);
-  });
-});
-
-describe("Rank#comparePower()", () => {
-  test("Rank.Ace.comparePower(Rank.King) returns negative integer", () => {
-    expect(Rank.Ace.comparePower(Rank.King)).toBeLessThan(0);
+  test("Rank.Ten.compare(Rank.Ten) returns 0", () => {
+    expect(Rank.Ten.compare(Rank.Ten)).toBe(0);
   });
 
-  test("Rank.Five.comparePower(Rank.Eight) returns positive integer", () => {
-    expect(Rank.Five.comparePower(Rank.Eight)).toBeGreaterThan(0);
-  });
-
-  test("Rank.Ten.comparePower(Rank.Ten) returns 0", () => {
-    expect(Rank.Ten.comparePower(Rank.Ten)).toBe(0);
-  });
-
-  test("Rank.King.comparePower(Rank.Deuce) returns negative integer", () => {
-    expect(Rank.King.comparePower(Rank.Deuce)).toBeLessThan(0);
+  test("Rank.King.compare(Rank.Deuce) returns negative integer", () => {
+    expect(Rank.King.compare(Rank.Deuce)).toBeLessThan(0);
   });
 });

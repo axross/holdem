@@ -24,9 +24,9 @@ export class CardSet implements Iterable<Card> {
    * ```ts
    * const cardSet = CardSet.from([
    *   new Card(Rank.Ace, Suit.Spade),
-   *   CardUtils.create("K", "c"),
-   *   CardUtils.create("Q", "h"),
-   *   CardUtils.create("J", "d"),
+   *   new Card(Rank.King, Rank.Club),
+   *   new Card(Rank.Queen, Rank.Queen),
+   *   new Card(Rank.Jack, Rank.Diamond),
    * ]);
    * ```
    */
@@ -47,9 +47,9 @@ export class CardSet implements Iterable<Card> {
    * ```ts
    * CardSetUtils.parse("AsQhJdKc") === CardSet.from([
    *   new Card(Rank.Ace, Suit.Spade),
-   *   CardUtils.create("K", "c"),
-   *   CardUtils.create("Q", "h"),
-   *   CardUtils.create("J", "d"),
+   *   new Card(Rank.King, Rank.Club),
+   *   new Card(Rank.Queen, Rank.Queen),
+   *   new Card(Rank.Jack, Rank.Diamond),
    * ]);  // => true
    *
    * CardSetUtils.parse("") === CardSetUtils.empty;  // => true
@@ -77,6 +77,8 @@ export class CardSet implements Iterable<Card> {
 
   readonly intValue: number;
 
+  private memoizedSize: number | null = null;
+
   /**
    * Returns number of cards in a CardSet.
    *
@@ -84,24 +86,28 @@ export class CardSet implements Iterable<Card> {
    * ```ts
    * const cardSet = CardSet.from([
    *   new Card(Rank.Ace, Suit.Spade),
-   *   CardUtils.create("K", "c"),
-   *   CardUtils.create("Q", "h"),
-   *   CardUtils.create("J", "d"),
+   *   new Card(Rank.King, Rank.Club),
+   *   new Card(Rank.Queen, Rank.Queen),
+   *   new Card(Rank.Jack, Rank.Diamond),
    * ]);
    *
-   * CardSetUtils.size(cardSet);             // => 4
-   * CardSetUtils.size(CardSetUtils.empty);  // => 0
-   * CardSetUtils.size(CardSetUtils.full);   // => 52
+   * cardSet.size;             // => 4
+   * CardSetUtils.empty.size;  // => 0
+   * CardSetUtils.full.size;   // => 52
    * ```
    */
-  size(): number {
-    let size = 0;
+  get size(): number {
+    if (this.memoizedSize === null) {
+      let size = 0;
 
-    for (const _ of this) {
-      size += 1;
+      for (const _ of this) {
+        size += 1;
+      }
+
+      this.memoizedSize = size;
     }
 
-    return size;
+    return this.memoizedSize;
   }
 
   /**
@@ -175,17 +181,17 @@ export class CardSet implements Iterable<Card> {
    * CardSetUtils.union(
    *   CardSet.from([
    *     new Card(Rank.Ace, Suit.Spade),
-   *     CardUtils.create("Q", "h"),
+   *     new Card(Rank.Queen, Rank.Queen),
    *   ]),
    *   CardSet.from([
-   *     CardUtils.create("K", "c"),
-   *     CardUtils.create("J", "d"),
+   *     new Card(Rank.King, Rank.Club),
+   *     new Card(Rank.Jack, Rank.Diamond),
    *   ]),
    * ) === CardSet.from([
    *   new Card(Rank.Ace, Suit.Spade),
-   *   CardUtils.create("K", "c"),
-   *   CardUtils.create("Q", "h"),
-   *   CardUtils.create("J", "d"),
+   *   new Card(Rank.King, Rank.Club),
+   *   new Card(Rank.Queen, Rank.Queen),
+   *   new Card(Rank.Jack, Rank.Diamond),
    * ]);
    * ```
    */
@@ -204,18 +210,18 @@ export class CardSet implements Iterable<Card> {
    * ```ts
    * CardSet.from([
    *   new Card(Rank.Ace, Suit.Spade),
-   *   CardUtils.create("Q", "h"),
+   *   new Card(Rank.Queen, Rank.Queen),
    * ]).union(
    *   CardSet.from([
-   *     CardUtils.create("K", "c"),
-   *     CardUtils.create("J", "d"),
+   *     new Card(Rank.King, Rank.Club),
+   *     new Card(Rank.Jack, Rank.Diamond),
    *   ]),
    * ).equals(
    *   CardSet.from([
    *     new Card(Rank.Ace, Suit.Spade),
-   *     CardUtils.create("K", "c"),
-   *     CardUtils.create("Q", "h"),
-   *     CardUtils.create("J", "d"),
+   *     new Card(Rank.King, Rank.Club),
+   *     new Card(Rank.Queen, Rank.Queen),
+   *     new Card(Rank.Jack, Rank.Diamond),
    *   ])
    * );  // => true
    * ```
@@ -235,16 +241,16 @@ export class CardSet implements Iterable<Card> {
    * ```ts
    * CardSet.from([
    *   new Card(Rank.Ace, Suit.Spade),
-   *   CardUtils.create("Q", "h"),
-   *   CardUtils.create("J", "d"),
-   *   CardUtils.create("K", "c"),
+   *   new Card(Rank.Queen, Rank.Queen),
+   *   new Card(Rank.Jack, Rank.Diamond),
+   *   new Card(Rank.King, Rank.Club),
    * ]).format() === "AsQhJdKc";
    * ```
    */
   format(): string {
     const _cards = [...this];
 
-    _cards.sort((a, b) => a.comparePower(b));
+    _cards.sort((a, b) => a.compare(b));
 
     return _cards.map((c) => c.format()).join("");
   }

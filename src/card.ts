@@ -15,15 +15,15 @@ export class Card {
    *
    * @example
    * ```ts
-   * CardUtils.parse("As") === CardUtils.create("A", "s");
-   * CardUtils.parse("2s") === CardUtils.create("2", "s");
-   * CardUtils.parse("Kc") === CardUtils.create("K", "c");
+   * Card.parse("As").equals(new Card(Rank.Ace, Suit.Spade));    // => true
+   * Card.parse("2s").equals(new Card(Rank.Deuce, Suit.Spade));  // => true
+   * Card.parse("Kc").equals(new Card(Rank.King, Suit.Club));    // => true
    * ```
    */
   static parse(string: string): Card {
     if (!/^[A23456789TJQK][shdc]$/.test(string)) {
       throw new TypeError(
-        `"${string}" is not a valid string for CardUtils.parse().`
+        `"${string}" is not a valid string for Card.parse().`
       );
     }
 
@@ -35,10 +35,10 @@ export class Card {
    *
    * @example
    * ```
-   * new Card("A", "s").rank === "A";
-   * new Card("3", "h").rank === "3";
-   * new Card("T", "d").rank === "T";
-   * new Card("6", "c").rank === "6";
+   * new Card(Rank.Ace, Suit.Spade).rank === Rank.Ace;    // => true
+   * new Card(Rank.Trey, Suit.Heart).rank === Rank.Trey;  // => true
+   * new Card(Rank.Ten, Suit.Diamond).rank === Rank.Ten;  // => true
+   * new Card(Rank.Six, Suit.Club).rank === Rank.Six;     // => true
    * ```
    */
   readonly rank: Rank;
@@ -48,43 +48,27 @@ export class Card {
    *
    * @example
    * ```
-   * new Card("A", "s").suit === "s";
-   * new Card("3", "h").suit === "h";
-   * new Card("T", "d").suit === "d";
-   * new Card("6", "c").suit === "c";
+   * new Card(Rank.Ace, Suit.Spade).suit === Suit.Spade;      // => true
+   * new Card(Rank.Trey, Suit.Heart).suit === Suit.Heart;     // => true
+   * new Card(Rank.Ten, Suit.Diamond).suit === Suit.Diamond;  // => true
+   * new Card(Rank.Six, Suit.Club).suit === Suit.Club;        // => true
    * ```
    */
   readonly suit: Suit;
 
   /**
-   * Compares two cards in index order and returns integer compatible with Array#sort().
+   * Compares two cards in power order and returns integer compatible with Array#sort().
    *
    * @example
    * ```
-   * Card("A", "s").compare(Card("A", "d"));  // => negative integer
-   * Card("A", "d").compare(Card("6", "h"));  // => positive integer
-   * Card("A", "c").compare(Card("A", "c"));  // => 0
+   * CardUtils.compare(new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Diamond));  // => negative integer
+   * CardUtils.compare(new Card(Rank.Ace, Suit.Diamond), new Card(Rank.Six, Suit.Heart));  // => negative integer
+   * CardUtils.compare(new Card(Rank.Queen, Suit.Spade), new Card(Rank.Ace, Suit.Heart));  // => positive integer
+   * CardUtils.compare(new Card(Rank.Ace, Suit.Club), new Card(Rank.Ace, Suit.Club));      // => 0
    * ```
    */
   compare(other: Card): number {
-    return this.suit.compare(other.suit) * 13 + this.rank.compare(other.rank);
-  }
-
-  /**
-   * Compares two ranks in power order and returns integer compatible with Array#sort().
-   *
-   * @example
-   * ```
-   * CardUtils.comparePower(Card("A", "s"), Card("A", "d"));  // => negative integer
-   * CardUtils.comparePower(Card("A", "d"), Card("6", "h"));  // => negative integer
-   * CardUtils.comparePower(Card("Q", "s"), Card("A", "h"));  // => positive integer
-   * CardUtils.comparePower(Card("A", "c"), Card("A", "c"));  // => 0
-   * ```
-   */
-  comparePower(other: Card): number {
-    return (
-      this.rank.comparePower(other.rank) * 4 + this.suit.compare(other.suit)
-    );
+    return this.rank.compare(other.rank) * 4 + this.suit.compare(other.suit);
   }
 
   equals(other: Card) {
@@ -96,9 +80,9 @@ export class Card {
    *
    * @example
    * ```
-   * CardUtils.format(CardUtils.create("A", "s")) === ("As" as CardString);
-   * CardUtils.format(CardUtils.create("2", "s")) === ("2s" as CardString);
-   * CardUtils.format(CardUtils.create("K", "c")) === ("Kc" as CardString);
+   * new Card(Rank.Ace, Suit.Spade).format() === "As";    // => true
+   * new Card(Rank.Deuce, Suit.Spade).format() === "2s";  // => true
+   * new Card(Rank.King, Suit.Club).format() === "Kc";    // => true
    * ```
    */
   format(): string {

@@ -85,7 +85,7 @@ describe("CardSet.parse()", () => {
   });
 });
 
-describe("CardSet#size()", () => {
+describe("CardSet#size", () => {
   test("CardSet<AsQhJdKc>.size is 4", () => {
     expect(
       CardSet.from([
@@ -93,16 +93,16 @@ describe("CardSet#size()", () => {
         new Card(Rank.King, Suit.Club),
         new Card(Rank.Queen, Suit.Heart),
         new Card(Rank.Jack, Suit.Diamond),
-      ]).size()
+      ]).size
     ).toBe(4);
   });
 
   test("CardSet<As>.size is 1", () => {
-    expect(CardSet.from([new Card(Rank.Ace, Suit.Spade)]).size()).toBe(1);
+    expect(CardSet.from([new Card(Rank.Ace, Suit.Spade)]).size).toBe(1);
   });
 
   test("CardSet.full().size is 52", () => {
-    expect(CardSet.full().size()).toBe(52);
+    expect(CardSet.full().size).toBe(52);
   });
 });
 

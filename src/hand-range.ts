@@ -263,7 +263,7 @@ export class HandRange implements Iterable<readonly [CardSet, number]> {
     const handRange = new Map<number, number>();
 
     for (const [cardSet, probability] of entries) {
-      if (cardSet.size() !== 2) {
+      if (cardSet.size !== 2) {
         throw new Error(
           `${cardSet.format()} isn't a card pair (two-length card set).`
         );

@@ -173,7 +173,7 @@ export class MontecarloEvaluator extends Evaluator {
 
       if (!isPossible) continue;
 
-      for (let i = board.size(); i < 5; ) {
+      for (let i = board.size; i < 5; ) {
         const card = pickRandomCard();
 
         if (deck.has(card)) {
@@ -225,7 +225,7 @@ export class ExhaustiveEvaluator extends Evaluator {
         continue;
       }
 
-      if (board.size() < 5) {
+      if (board.size < 5) {
         for (const card of deck) {
           stack.push({
             deck: deck.removed(card),

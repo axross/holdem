@@ -100,31 +100,17 @@ export class Rank {
   }
 
   /**
-   * Compares two ranks in index order and returns integer compatible with Array#sort().
-   *
-   * @example
-   * ```
-   * Rank.Ace.compare(Rank.Deuce);  // => negative integer
-   * Rank.Deuce.compare(Rank.Ace);  // => positive integer
-   * Rank.Ace.compare(Rank.Ace);    // => 0
-   * ```
-   */
-  compare(other: Rank): number {
-    return this.index - other.index;
-  }
-
-  /**
    * Compares two ranks in power order and returns integer compatible with Array#sort().
    *
    * @example
    * ```
-   * Rank.Ace.comparePower(Rank.King);   // => negative integer
-   * Rank.King.comparePower(Rank.Ace);   // => positive integer
-   * Rank.Ace.comparePower(Rank.Ace);    // => 0
-   * Rank.Ace.comparePower(Rank.Deuce);  // => positive integer
+   * Rank.Ace.compare(Rank.King);   // => negative integer
+   * Rank.King.compare(Rank.Ace);   // => positive integer
+   * Rank.Ace.compare(Rank.Ace);    // => 0
+   * Rank.Ace.compare(Rank.Deuce);  // => positive integer
    * ```
    */
-  comparePower(other: Rank): number {
+  compare(other: Rank): number {
     return this.powerIndex - other.powerIndex;
   }
 
