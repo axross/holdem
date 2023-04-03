@@ -1,31 +1,30 @@
-/**
- * An enum type that expresses a rank part of a card. You can combine this with a Suit to build a CardString.
- *
- * @example
- * ```
- * const rankChar: RankChar = "A";
- * const suitChar: SuitChar = "s";
- * const cardString: CardString = `${rankChar}${suitChar}`;
- */
-export type Rank =
-  | "A"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "T"
-  | "J"
-  | "Q"
-  | "K";
+export class Rank {
+  static Ace = new Rank(0);
 
-/**
- * A utility function set for ranks.
- */
-export const RankUtils = Object.freeze({
+  static Deuce = new Rank(1);
+
+  static Trey = new Rank(2);
+
+  static Four = new Rank(3);
+
+  static Five = new Rank(4);
+
+  static Six = new Rank(5);
+
+  static Seven = new Rank(6);
+
+  static Eight = new Rank(7);
+
+  static Nine = new Rank(8);
+
+  static Ten = new Rank(9);
+
+  static Jack = new Rank(10);
+
+  static Queen = new Rank(11);
+
+  static King = new Rank(12);
+
   /**
    * Parses a char (= 1-charactor-length string) into a Rank.
    *
@@ -51,74 +50,112 @@ export const RankUtils = Object.freeze({
    * RankUtils.parse(4);  // Error: 4 is not a valid string value for RankUtils.parse().
    * ```
    */
-  parse(char: string): Rank {
-    if (!ranksInOrder.includes(char as never)) {
-      throw new Error(
-        `${JSON.stringify(char)} is not a valid value for RankUtils.parse().`
-      );
+  static parse(char: string): Rank {
+    switch (char) {
+      case "A":
+        return Rank.Ace;
+      case "2":
+        return Rank.Deuce;
+      case "3":
+        return Rank.Trey;
+      case "4":
+        return Rank.Four;
+      case "5":
+        return Rank.Five;
+      case "6":
+        return Rank.Six;
+      case "7":
+        return Rank.Seven;
+      case "8":
+        return Rank.Eight;
+      case "9":
+        return Rank.Nine;
+      case "T":
+        return Rank.Ten;
+      case "J":
+        return Rank.Jack;
+      case "Q":
+        return Rank.Queen;
+      case "K":
+        return Rank.King;
+      default:
+        throw new Error(
+          `${JSON.stringify(char)} is not a valid value for Rank.parse().`
+        );
     }
+  }
 
-    return char as Rank;
-  },
+  private constructor(index: number) {
+    this.index = index;
+  }
+
+  private readonly index: number;
+
+  private get powerIndex(): number {
+    if (this === Rank.Ace) {
+      return 0;
+    } else {
+      return 13 - this.index;
+    }
+  }
 
   /**
    * Compares two ranks in index order and returns integer compatible with Array#sort().
    *
    * @example
    * ```
-   * RankUtils.compare("A", "2");  // => negative integer
-   * RankUtils.compare("2", "A");  // => positive integer
-   * RankUtils.compare("A", "A");  // => 0
+   * Rank.Ace.compare(Rank.Deuce);  // => negative integer
+   * Rank.Deuce.compare(Rank.Ace);  // => positive integer
+   * Rank.Ace.compare(Rank.Ace);    // => 0
    * ```
    */
-  compare(a: Rank, b: Rank): number {
-    return ranksInOrder.indexOf(a) - ranksInOrder.indexOf(b);
-  },
+  compare(other: Rank): number {
+    return this.index - other.index;
+  }
 
   /**
    * Compares two ranks in power order and returns integer compatible with Array#sort().
    *
    * @example
    * ```
-   * RankUtils.compare("A", "K");  // => negative integer
-   * RankUtils.compare("K", "A");  // => positive integer
-   * RankUtils.compare("A", "A");  // => 0
-   * RankUtils.compare("A", "2");  // => positive integer
+   * Rank.Ace.comparePower(Rank.King);   // => negative integer
+   * Rank.King.comparePower(Rank.Ace);   // => positive integer
+   * Rank.Ace.comparePower(Rank.Ace);    // => 0
+   * Rank.Ace.comparePower(Rank.Deuce);  // => positive integer
    * ```
    */
-  comparePower(a: Rank, b: Rank): number {
-    return ranksInPowerOrder.indexOf(a) - ranksInPowerOrder.indexOf(b);
-  },
-});
+  comparePower(other: Rank): number {
+    return this.powerIndex - other.powerIndex;
+  }
 
-export const ranksInOrder: Rank[] = [
-  "A",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "T",
-  "J",
-  "Q",
-  "K",
-];
-
-export const ranksInPowerOrder: Rank[] = [
-  "A",
-  "K",
-  "Q",
-  "J",
-  "T",
-  "9",
-  "8",
-  "7",
-  "6",
-  "5",
-  "4",
-  "3",
-  "2",
-]
+  format(): string {
+    switch (this) {
+      case Rank.Deuce:
+        return "2";
+      case Rank.Trey:
+        return "3";
+      case Rank.Four:
+        return "4";
+      case Rank.Five:
+        return "5";
+      case Rank.Six:
+        return "6";
+      case Rank.Seven:
+        return "7";
+      case Rank.Eight:
+        return "8";
+      case Rank.Nine:
+        return "9";
+      case Rank.Ten:
+        return "T";
+      case Rank.Jack:
+        return "J";
+      case Rank.Queen:
+        return "Q";
+      case Rank.King:
+        return "K";
+      default:
+        return "A";
+    }
+  }
+}

@@ -1,12 +1,12 @@
-/**
- * An string-enum type that expresses a suit part of a card. You can combine this with a Rank to build a CardString.
- */
-export type Suit =  "s" | "h" | "d" | "c";
+export class Suit {
+  static Spade = new Suit(0);
 
-/**
- * A utility function set for Suits.
- */
-export const SuitUtils = Object.freeze({
+  static Heart = new Suit(1);
+
+  static Diamond = new Suit(2);
+
+  static Club = new Suit(3);
+
   /**
    * Parses a char (= 1-charactor-length string) into a Suit.
    *
@@ -25,15 +25,28 @@ export const SuitUtils = Object.freeze({
    * SuitUtils.parse("S");  // => Error: "S" is not a valid string value for SuitUtils.parse().
    * ```
    */
-  parse(char: string): Suit {
-    if (!suitsInOrder.includes(char as never)) {
-      throw new Error(
-        `${JSON.stringify(char)} is not a valid value for SuitUtils.parse().`
-      );
+  static parse(char: string): Suit {
+    switch (char) {
+      case "s":
+        return Suit.Spade;
+      case "h":
+        return Suit.Heart;
+      case "d":
+        return Suit.Diamond;
+      case "c":
+        return Suit.Club;
+      default:
+        throw new Error(
+          `${JSON.stringify(char)} is not a valid value for Suit.parse().`
+        );
     }
+  }
 
-    return char as Suit;
-  },
+  private constructor(index: number) {
+    this.index = index;
+  }
+
+  private readonly index: number;
 
   /**
    * Compares two ranks in index order and returns integer compatible with Array#sort().
@@ -42,16 +55,25 @@ export const SuitUtils = Object.freeze({
    *
    * @example
    * ```
-   * SuitUtils.compare("s", "h");  // => negative integer
-   * SuitUtils.compare("c", "d");  // => positive integer
-   * SuitUtils.compare("h", "h");  // => 0
+   * Suit.Spade.compare(Suit.Heart);   // => negative integer
+   * Suit.Club.compare(Suit.Diamond);  // => positive integer
+   * Suit.Heart.compare(Suit.Heart);   // => 0
    * ```
    */
-  compare(a: Suit, b: Suit): number {
-    return suitsInOrder.indexOf(a) - suitsInOrder.indexOf(b);
-  },
-});
+  compare(other: Suit): number {
+    return this.index - other.index;
+  }
 
-export const suitsInOrder: Suit[] = [
-  "s", "h", "d", "c"
-];
+  format(): string {
+    switch (this) {
+      case Suit.Heart:
+        return "h";
+      case Suit.Diamond:
+        return "d";
+      case Suit.Club:
+        return "c";
+      default:
+        return "s";
+    }
+  }
+}

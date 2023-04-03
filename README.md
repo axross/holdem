@@ -2,6 +2,10 @@
 
 ## API
 
+- `HandRange`
+  - `HandRange.empty()`
+  - 
+
 ### Card
 
 Card is expressed in integer binary (2^0 <= n <= 2^51). `0b1` is ace of spade. `0b10` is deuce of spade. `0b1000000000000000000000000000000000000000000000000000n` is king of club.
@@ -121,3 +125,71 @@ const aceOfSpade: CardString = `${aceChar}${spadeChar}`;
 #### `SuitUtils.fromChar(char: string): Suit`
 
 #### `SuitUtils.toChar(suit: Suit): string`
+
+### `HandRange`
+
+An iterable map class that represents a set of CardPair(s) and their existance probability.
+
+As HandRange is iterable of `[CardSet, number]`, you can use this in for loop.
+
+```ts
+for (const [cardSet, probability] of HandRange.parse("88-66")) {
+  // ...
+}
+```
+
+#### `HandRange.empty(): HandRange`
+
+Returns an empty HandRange.
+
+```ts
+const handRange = HandRange.empty();
+```
+
+#### `HandRange.parse(): HandRange`
+
+Parses a string and returns a HandRange.
+
+The parameter string needs to be comma-separated parts. Each parts should be `<hand>:<probability>` where `<hand>` is the following specifiers and `<probability>` is float.
+
+- `AsKc` - specific pair of cards.
+- `66` - all pocket pair combinations of six.
+- `AKs` - all suited pair combinations of ace and king.
+- `T9o` - all ofsuit pair combinations of ten and nine.
+- `JJ-99` - all pocket combinations of `JJ`, `TT` and `99`.
+- `86s-84s` - all suited combinations of `86s`, `85s` and `84s`.
+- `AJo-A9o` - all ofsuite combinations of `AJo`, `ATo` and `A9o`.
+- `JJ+` - equivalent to `AA-JJ`.
+- `85s+` - equivalent to `87s-85s`.
+- `AQo+` - equivalent to `AKo-AQo`.
+
+The probability can be omitted. `AsKs` works as same as `AsKs:1`.
+
+
+```ts
+const handRange = HandRange.parse("88-66:0.66,JJ+:0.5,44,AQs-A9s:0.2");
+```
+
+#### `HandRange.from()`
+
+Returns a HandRange that contains all the given entries of CardSet and its existance probability.
+
+```ts
+const handRange = HandRange.from([
+  CardSet.parse("AsKs"),
+  CardSet.parse("8h8d"),
+  CardSet.parse("6s5s"),
+]);
+```
+
+#### HandRange.onlyRankPairs()
+
+Returns a map of rank pair string and its probability. Map key is string representation of rank pair such as `AsKh`. Detatched card pairs are ignored.
+
+```ts
+const handRange = HandRange.parse("AKs:0.5");
+const onlyRankPairs = handRange.onlyRankPairs();
+onlyRankPairs.entries();  // => Iterable of ["AsKs", 0.5], ["AhKh", 0.5], ...
+```
+
+#### 
